@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodología Odoo Tecno-Dinámica - DIC Consultores (Tema Claro)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
+
+        /* Estilos generales del cuerpo - TEMA CLARO */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6; /* Gris claro (Tailwind gray-100) */
+            color: #1F2937; /* Gris oscuro para texto (Tailwind gray-800) */
+            overflow-x: hidden; 
+            position: relative; 
+            margin: 0; 
+        }
+
+        /* Estilo para el canvas de partículas - TEMA CLARO */
+        #particle-canvas {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+            display: block; 
+        }
+
+        /* Estilo para el fondo del modal (backdrop) - Se mantiene oscuro para contraste */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Negro semitransparente */
+            z-index: 500; 
+            opacity: 0;
+            pointer-events: none; 
+            transition: opacity 0.3s ease-out;
+        }
+        .modal-backdrop.active {
+            opacity: 1;
+        }
+
+        /* Contenedor principal del mapa mental */
+        .mindmap-canvas {
+            min-height: 100vh; 
+            padding: 3rem 1.5rem; 
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            gap: 1rem; 
+            position: relative; 
+        }
+
+        /* Estilo base para todos los nodos - TEMA CLARO */
+        .node {
+            background-color: #FFFFFF; /* Blanco */
+            border-radius: 12px; 
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            border: 1px solid #D1D5DB; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        
+        /* Eliminada la regla .node::before para la animación de borde */
+
+        .node:hover {
+            transform: translateY(-6px) scale(1.03); 
+            box-shadow: 0 20px 25px -5px rgba(0, 119, 182, 0.15), 0 10px 10px -5px rgba(0, 119, 182, 0.1); 
+            border-color: #0077B6; /* Restaurado el color de borde en hover */
+        }
+        
+        /* Eliminada la regla @keyframes spin-border */
+
+
+        .node.node-active { 
+            border-color: #0077B6; 
+        }
+
+
+        .node.central-node { 
+            background: linear-gradient(145deg, #0077B6, #00B4D8); 
+            color: #FFFFFF; 
+            padding: 2rem 2.5rem;
+            min-width: 320px; 
+            border: 2px solid #00A5E0; 
+            box-shadow: 0 0 25px rgba(0, 165, 224, 0.2), 0 0 10px rgba(0, 165, 224, 0.3) inset; 
+            animation: central-node-pulse 3s infinite ease-in-out; 
+        }
+        @keyframes central-node-pulse { 
+            0% { transform: scale(1); box-shadow: 0 0 25px rgba(0, 165, 224, 0.2), 0 0 10px rgba(0, 165, 224, 0.3) inset; }
+            50% { transform: scale(1.02); box-shadow: 0 0 35px rgba(0, 165, 224, 0.3), 0 0 15px rgba(0, 165, 224, 0.4) inset; }
+            100% { transform: scale(1); box-shadow: 0 0 25px rgba(0, 165, 224, 0.2), 0 0 10px rgba(0, 165, 224, 0.3) inset; }
+        }
+        .node.central-node:hover { 
+             box-shadow: 0 0 40px rgba(0, 165, 224, 0.4), 0 0 20px rgba(0, 165, 224, 0.5) inset;
+             transform: translateY(-5px) scale(1.04);
+             border-color: #00A5E0; 
+        }
+
+        .node.central-node h1 { 
+            font-family: 'Roboto Mono', monospace; 
+            font-size: 2.25rem; 
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(255,255,255,0.2); 
+        }
+        .node.central-node p { 
+            font-size: 1rem;
+            opacity: 0.9; 
+            margin-top: 0.5rem;
+        }
+
+        .node-title {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #111827; 
+            margin-bottom: 0.5rem;
+        }
+        .node.central-node .node-title { 
+            color: #FFFFFF; 
+        }
+        .node-subtitle { 
+            font-size: 0.9rem;
+            color: #4B5563; 
+            margin-bottom: 1rem;
+        }
+        .node-icon { 
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: inline-block; 
+            transition: transform 0.3s ease;
+        }
+        .node:hover .node-icon { 
+            transform: scale(1.1) rotate(5deg);
+        }
+        .node.central-node .node-icon { 
+            color: #E0F2FE; 
+            animation: central-icon-float 3s infinite ease-in-out; 
+        }
+        @keyframes central-icon-float { 
+            0% { transform: translateY(0px) scale(1.0); }
+            50% { transform: translateY(-5px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1.0); }
+        }
+
+        .details-panel {
+            position: fixed; 
+            top: 50%;
+            left: 50%;
+            width: 95vw; 
+            height: 95vh; 
+            max-width: 1600px; 
+            max-height: 95vh; 
+            background-color: #FFFFFF; 
+            backdrop-filter: blur(0px); 
+            border-radius: 12px; 
+            border: 1px solid #CBD5E1; 
+            z-index: 1000; 
+            
+            opacity: 0; 
+            transform: translate(-50%, -50%) scale(0.95); 
+            transform-origin: center center; 
+            pointer-events: none; 
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; 
+            
+            padding: 2rem; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .details-panel.active { 
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1); 
+            pointer-events: auto; 
+        }
+
+        .modal-close-btn { 
+            position: absolute;
+            top: 1.5rem; 
+            right: 2rem;  
+            background: transparent;
+            border: none;
+            color: #6B7280; 
+            font-size: 2.5rem; 
+            line-height: 1;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.2s ease, transform 0.2s ease;
+            z-index: 1001; 
+        }
+        .modal-close-btn:hover {
+            color: #0077B6; 
+            transform: scale(1.1);
+        }
+
+        .details-panel h3 { 
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.5rem; 
+            font-weight: 600;
+            color: #0077B6; 
+            margin-bottom: 0.5rem; 
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #E5E7EB; 
+            text-shadow: none; 
+            flex-shrink: 0; 
+        }
+        #detailsFases > p.text-sm { 
+            color: #374151; 
+            margin-bottom: 1.5rem; 
+            flex-shrink: 0;
+        }
+
+        .details-panel ul { list-style-type: none; padding-left: 0; } 
+        .details-panel li { 
+            padding: 0.5rem 0; 
+            font-size: 1rem; 
+            color: #374151; 
+            display: flex; align-items: flex-start;
+            transition: color 0.2s ease;
+        }
+         .details-panel li:hover { color: #0077B6; } 
+        .details-panel li::before { 
+            content: '»'; margin-right: 0.75rem; color: #059669; 
+            font-weight: bold; line-height: 1.6; 
+            text-shadow: none; 
+        }
+        .details-panel strong { color: #111827; font-weight: 600;} 
+        .entregable-item { 
+            background-color: #D1FAE5; 
+            color: #047857; 
+            border: 1px solid #A7F3D0; 
+            padding: 0.4rem 1rem; 
+            border-radius: 9999px; 
+            font-size: 0.85rem; 
+            font-weight: 500;
+            display: inline-block; margin-top: 0.75rem;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .entregable-item:hover { 
+            background-color: #6EE7B7; 
+            color: #064E3B; 
+            box-shadow: 0 0 10px #A7F3D0; 
+        }
+
+        #detailsFases .phases-container {
+            display: flex;
+            flex-wrap: nowrap;   
+            overflow-x: auto; 
+            overflow-y: hidden;
+            gap: 6px;      
+            align-items: stretch; 
+            padding-top: 1rem; 
+            padding-bottom: 2rem; 
+            margin-top: 0; 
+            border-bottom: 1px solid #E5E7EB; 
+            margin-bottom: 1.5rem; 
+            flex-shrink: 0; 
+        }
+        #detailsFases .phases-container::-webkit-scrollbar { height: 8px; }
+        #detailsFases .phases-container::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 4px; } 
+        #detailsFases .phases-container::-webkit-scrollbar-thumb { background: #9CA3AF; border-radius: 4px; }
+        #detailsFases .phases-container::-webkit-scrollbar-thumb:hover { background: #6B7280; }
+
+        #detailsFases .phases-container::before { 
+            display: none;
+        }
+
+        #detailsFases .phase-node {
+            --chevron-cut: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem;        
+            background-color: #F3F4F6; 
+            color: #1E3A8A; 
+            padding: 0.8rem calc(var(--chevron-cut) + 0.5rem) 0.8rem calc(var(--chevron-cut) + 0.75rem); 
+            border-radius: 0; 
+            border: 1px solid #D1D5DB; 
+            text-align: left;  
+            margin-left: 0; 
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+            cursor: pointer; 
+            flex-shrink: 0; 
+            min-width: 230px; 
+            position: relative; 
+            clip-path: polygon(0% 0%, calc(100% - var(--chevron-cut)) 0%, 100% 50%, calc(100% - var(--chevron-cut)) 100%, 0% 100%, var(--chevron-cut) 50%);
+        }
+        #detailsFases .phase-node:first-child {
+            clip-path: polygon(0% 0%, calc(100% - var(--chevron-cut)) 0%, 100% 50%, calc(100% - var(--chevron-cut)) 100%, 0% 100%);
+            padding-left: 1.25rem; 
+        }
+
+        #detailsFases .phase-node:hover {
+            background-color: #E0F2FE; 
+            border-color: #BAE6FD; 
+            color: #1C3D5A;
+        }
+        #detailsFases .phase-node.phase-detail-active { 
+            background-color: #0077B6; 
+            border-color: #005A8D;
+            color: #FFFFFF; 
+        }
+        #detailsFases .phase-node.phase-detail-active .node-title,
+        #detailsFases .phase-node.phase-detail-active .node-subtitle {
+            color: #FFFFFF; 
+        }
+        #detailsFases .phase-node.phase-detail-active .node-icon {
+             background-color: #FFFFFF; 
+             color: #0077B6; 
+             border-color: #FFFFFF;
+        }
+        
+        #detailsFases .phase-node .node-icon { 
+            position: static; 
+            transform: none;  
+            width: auto; height: auto; 
+            padding: 0.4em 0.6em; 
+            font-size: 0.9rem;   
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            border: 2px solid; 
+            border-radius: 6px; 
+            line-height: 1; 
+            margin: 0; 
+            flex-shrink: 0; 
+            color: #0077B6; 
+            border-color: #00A5E0; 
+            background-color: #FFFFFF; 
+        }
+        #detailsFases .phase-node:hover .node-icon { 
+            background-color: #00A5E0; 
+            color: #FFFFFF; 
+            border-color: #00A5E0;
+        }
+
+        #detailsFases .phase-node .node-title { 
+            font-size: 0.95rem; 
+            margin-bottom: 0.1rem;
+            font-weight: 600;
+        }
+        #detailsFases .phase-node .node-subtitle { 
+            font-size: 0.75rem; 
+            margin-bottom: 0;
+        }
+        
+        #phase-detail-content-area {
+            width: 100%;
+            overflow: visible; 
+            position: relative; 
+        }
+        .phase-specific-content {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden; 
+            transform: translateY(20px) scaleY(0.98); 
+            transform-origin: top;
+            transition: opacity 0.35s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                        transform 0.35s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                        max-height 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+            padding-top: 0px; 
+            position: relative; 
+            width: 100%;
+        }
+        .phase-specific-content.active {
+            opacity: 1;
+            max-height: none; 
+            transform: translateY(0) scaleY(1);
+            overflow: visible; 
+        }
+        .phase-specific-content h3 {  
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.3rem; 
+            font-weight: 600;
+            color: #0284C7; 
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #D1D5DB; 
+        }
+        
+        .principles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 1.75rem; 
+            width: 100%;
+            max-width: 1000px; 
+            margin-top: 1rem;
+        }
+        .principle-node { 
+            background-color: #F9FAFB; 
+            backdrop-filter: none;
+            padding: 1.75rem;
+            border-top-width: 5px; 
+            border-color: #A855F7; 
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+         .principle-node:hover { 
+            border-color: #10B981; 
+            transform: translateY(-4px); 
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2), 0 8px 15px rgba(0,0,0,0.08); 
+         }
+        .principle-node .node-icon { 
+            color: #A855F7; 
+            font-size: 2rem;
+            transition: color 0.3s ease;
+        }
+        .principle-node:hover .node-icon { 
+            color: #10B981; 
+        }
+        .principle-node .node-title { 
+            font-size: 1.125rem;
+            color: #1F2937; 
+        }
+        .principle-node p { 
+            font-size: 0.875rem;
+            color: #4B5563; 
+        }
+        
+        .connection-area {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0.75rem 0 1.75rem 0;
+        }
+        .connector-line { 
+            width: 4px;
+            height: 60px;
+            border-radius: 2px;
+            position: relative; 
+            overflow: hidden; 
+        }
+        .connector-line::before { 
+            content: '';
+            position: absolute;
+            inset: 0; 
+            background: linear-gradient(to bottom, #BFDBFE, #F3F4F6 80%); 
+        }
+        .connector-line::after { 
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 30%; 
+            background: linear-gradient(to bottom, transparent, #3B82F6, transparent); 
+            animation: connector-flow 2.5s linear infinite; 
+            opacity: 0.9;
+        }
+        @keyframes connector-flow { 
+            0% { transform: translateY(-100%); opacity: 0; } 
+            30%, 70% { opacity: 0.9; } 
+            100% { transform: translateY(230%); opacity: 0; } 
+        }
+
+        .details-panel::-webkit-scrollbar { width: 10px; }
+        .details-panel::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 8px; } 
+        .details-panel::-webkit-scrollbar-thumb { background: #9CA3AF; border-radius: 8px; border: 2px solid #E5E7EB; }
+        .details-panel::-webkit-scrollbar-thumb:hover { background: #6B7280; }
+
+        #nodePreliminar:hover .node-icon { animation: chat-bubble-pop 0.8s ease-in-out infinite alternate; }
+        @keyframes chat-bubble-pop {
+            0% { transform: scale(1.1) rotate(5deg); }
+            50% { transform: scale(1.15) rotate(-3deg); }
+            100% { transform: scale(1.1) rotate(5deg); }
+        }
+        #nodeFases:hover .node-icon { animation: map-scan 1.5s linear infinite; }
+        @keyframes map-scan {
+            0% { filter: brightness(100%) drop-shadow(0 0 2px #60A5FA); }
+            50% { filter: brightness(120%) drop-shadow(0 0 8px #60A5FA); } 
+            100% { filter: brightness(100%) drop-shadow(0 0 2px #60A5FA); }
+        }
+         #nodePrincipios:hover .node-icon { animation: principles-sparkle 1s infinite; }
+        @keyframes principles-sparkle {
+            0%, 100% { transform: scale(1.1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(10deg); opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div id="modal-backdrop" class="modal-backdrop"></div>
+
+    <div class="mindmap-canvas">
+       <div id="centralNode" class="node central-node">
+            <div class="node-icon"><img src="DICC.png" style="height: 120px;"></div>
+            <h1>Metodología <span style="color: #714B67;">Odoo</span></h1> <p>Tu viaje estratégico a la transformación digital con DIC Consultores</p>
+        </div>
+        
+        <div class="connection-area"><div class="connector-line"></div></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-6xl">
+            <div id="nodePreliminar" class="node" data-target="detailsPreliminar">
+                <div class="node-icon" style="color: #2563EB;">💬</div> <h2 class="node-title">Etapa Preliminar</h2>
+                <p class="node-subtitle">Contacto y Entendimiento Inicial</p>
+            </div>
+
+            <div id="nodeFases" class="node" data-target="detailsFases">
+                <div class="node-icon" style="color: #0EA5E9;">🗺️</div> <h2 class="node-title">Fases de Implementación</h2>
+                <p class="node-subtitle">El Camino Detallado del Proyecto</p>
+            </div>
+
+            <div id="nodePrincipios" class="node" data-target="detailsPrincipios">
+                <div class="node-icon" style="color: #EC4899;">✨</div> <h2 class="node-title">Principios Clave</h2>
+                <p class="node-subtitle">Nuestra Alianza Estratégica</p>
+            </div>
+        </div>
+
+        <div id="detailsContainer"> 
+            <div id="detailsPreliminar" class="details-panel">
+                <button type="button" class="modal-close-btn" aria-label="Cerrar modal">&times;</button>
+                <h3>¿Qué hacemos en esta etapa?</h3>
+                <ul>
+                    <li><strong>Reuniones de acercamiento:</strong> Conversación abierta (presencial o en línea) sobre tu empresa, equipo, experiencia y desafíos.</li>
+                    <li><strong>Presentación de Odoo (si es necesario):</strong> Demostración para visualizar cómo Odoo puede simplificar y potenciar las funciones clave de tu negocio.</li>
+                    <li><strong>Diálogo sobre tus necesidades:</strong> Escuchamos tus problemáticas y respondemos dudas generales sobre ERP/Odoo.</li>
+                </ul>
+                <h3 class="mt-6">¿Qué obtienes al final de esta etapa?</h3>
+                <p class="text-sm text-gray-500 mb-2"><strong>Una propuesta estimada:</strong></p> <ul>
+                    <li>Costos aproximados de licencias Odoo.</li>
+                    <li>Costos de servicios de plataformas tecnológicas (ej. Odoo Online, o Odoo.sh si se requieren desarrollos).</li>
+                    <li>Lista preliminar de módulos beneficiosos (se confirmará o ajustará).</li>
+                    <li>Tiempo estimado del proyecto (se precisará).</li>
+                    <li>Costo estimado por nuestros servicios de implementación (configuración, personalizaciones, desarrollos, capacitación, puesta en marcha, soporte inicial).</li>
+                </ul>
+            </div>
+
+            <div id="detailsFases" class="details-panel">
+                <button type="button" class="modal-close-btn" aria-label="Cerrar modal">&times;</button>
+                <h3>Fases de Implementación</h3>
+                <p class="text-sm text-gray-600">Haz clic en cada fase (F1, F2, etc.) para ver sus detalles.</p> 
+                <div class="phases-container"> 
+                    <div class="node phase-node" data-target="detailsFase1">
+                        <div class="node-icon">F1</div>
+                        <div>
+                            <h2 class="node-title">Diagnóstico</h2>
+                            <p class="node-subtitle">Definición de la hoja de ruta</p>
+                        </div>
+                    </div>
+                    <div class="node phase-node" data-target="detailsFase2">
+                        <div class="node-icon">F2</div>
+                        <div>
+                            <h2 class="node-title">Diseño y Flujos en Odoo</h2>
+                            <p class="node-subtitle">Creación de nuevos flujos de trabajo</p>
+                        </div>
+                    </div>
+                    <div class="node phase-node" data-target="detailsFase3">
+                        <div class="node-icon">F3</div>
+                        <div>
+                            <h2 class="node-title">BD, Config. Inicial e Importación</h2>
+                            <p class="node-subtitle">Establecimiento del entorno y datos</p>
+                        </div>
+                    </div>
+                    <div class="node phase-node" data-target="detailsFase4">
+                        <div class="node-icon">F4</div>
+                        <div>
+                            <h2 class="node-title">Config. Específica y Desarrollo</h2>
+                            <p class="node-subtitle">Ajustes a medida y funcionalidad</p>
+                        </div>
+                    </div>
+                    <div class="node phase-node" data-target="detailsFase5">
+                        <div class="node-icon">F5</div>
+                        <div>
+                            <h2 class="node-title">Pruebas y Validación (UAT)</h2>
+                            <p class="node-subtitle">Asegurando la calidad contigo</p>
+                        </div>
+                    </div>
+                    <div class="node phase-node" data-target="detailsFase6">
+                        <div class="node-icon">F6</div>
+                        <div>
+                            <h2 class="node-title">Capacitación del Equipo</h2>
+                            <p class="node-subtitle">Empoderando a tus usuarios</p>
+                        </div>
+                    </div>
+                    <div class="node phase-node" data-target="detailsFase7">
+                        <div class="node-icon">F7</div>
+                        <div>
+                            <h2 class="node-title">Go-Live y Soporte Inicial</h2>
+                            <p class="node-subtitle">Arranque y estabilización</p>
+                        </div>
+                    </div>
+                    <div class="node phase-node" data-target="detailsFase8">
+                        <div class="node-icon">F8</div>
+                        <div>
+                            <h2 class="node-title">Soporte y Evolución Continua</h2>
+                            <p class="node-subtitle">Alianza a largo plazo (Opcional)</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="phase-detail-content-area">
+                    <div id="content-detailsFase1" class="phase-specific-content">
+                        <h3>Fase 1: Diagnóstico</h3>
+                        <p class="text-sm mb-1"><strong>Objetivo:</strong> Recopilar y analizar información para diseñar una solución Odoo a tu medida, planificar el proyecto y confirmar alcances y costos, enfocándonos en resolver tus problemáticas.</p>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">¿Qué hacemos?</h4>
+                        <ul>
+                            <li>Reunión de inicio del proyecto (Kick-Off).</li>
+                            <li>Entendimiento de tus procesos y particularidades.</li>
+                            <li>Revisión de normativa y estructura.</li>
+                            <li>Entrevistas con el personal clave.</li>
+                            <li>Evaluación funcional Odoo vs. necesidades.</li>
+                            <li>Análisis de formatos y reportes.</li>
+                            <li>Revisión de tu infraestructura tecnológica.</li>
+                        </ul>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">¿Qué definimos?</h4>
+                        <ul>
+                            <li>Identificación de brechas y problemáticas clave.</li>
+                            <li>Definición de la solución propuesta y beneficios esperados.</li>
+                            <li>Definición final de módulos a implementar.</li>
+                            <li>Plan de trabajo.</li>
+                            <li>Definición de usuarios y roles en Odoo.</li>
+                            <li>Confirmación de requerimientos para plataformas tecnológicas o hardware.</li>
+                            <li>Costos finales del proyecto.</li>
+                        </ul>
+                        <div class="entregable-item mt-3">Entregable: Informe de Diagnóstico</div>
+                    </div>
+                    <div id="content-detailsFase2" class="phase-specific-content">
+                        <h3>Fase 2: Diseño y Flujos en Odoo</h3>
+                        <p class="text-sm mb-1"><strong>Objetivo:</strong> Traducir el diagnóstico en un diseño claro de cómo tus procesos se ejecutarán en Odoo.</p>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">¿Qué hacemos?</h4>
+                        <ul>
+                            <li>Mapeo de procesos clave en Odoo (ej. cotización optimizada).</li>
+                            <li>Enfoque en los procesos que se gestionarán en Odoo.</li>
+                            <li>Elaboración de reglas de negocio o historias de usuario (si se requieren desarrollos).</li>
+                        </ul>
+                        <div class="entregable-item mt-3">Entregables: Flujos de trabajo de Odoo; Reglas de negocio/Historias de usuario (Si aplica)</div>
+                    </div>
+                    <div id="content-detailsFase3" class="phase-specific-content">
+                        <h3>Fase 3: BD, Config. Inicial e Importación</h3>
+                        <p class="text-sm mb-1"><strong>Objetivo:</strong> Establecer el entorno Odoo, realizar configuración general e importar tus datos maestros.</p>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">¿Qué hacemos?</h4>
+                        <ul>
+                            <li>Creación y configuración inicial de BD (Odoo Online/Odoo.sh).</li>
+                            <li>Revisión de datos para importación (plantillas, requisitos técnicos).</li>
+                            <li>Importación de datos con tu visto bueno.</li>
+                        </ul>
+                        <div class="entregable-item mt-3">Entregables: BD creada; Observaciones sobre datos (si aplica); Datos maestros importados; Catálogos de info. cargada</div>
+                    </div>
+                    <div id="content-detailsFase4" class="phase-specific-content">
+                        <h3>Fase 4: Config. Específica y Desarrollo</h3>
+                        <p class="text-sm mb-1"><strong>Objetivo:</strong> Realizar la configuración de cada módulo según los flujos diseñados e implementar ajustes o desarrollos definidos.</p>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">¿Qué hacemos?</h4>
+                        <ul>
+                            <li>Configuración específica: Parametrización de cada módulo.</li>
+                            <li>Personalización y/o desarrollo (Si aplica).</li>
+                            <li>Pruebas internas de todo lo configurado/desarrollado.</li>
+                        </ul>
+                        <div class="entregable-item mt-3">Entregables: Módulos configurados; Personalizaciones/desarrollos (si aplica); Doc. técnica (cuando aplique)</div>
+                    </div>
+                    <div id="content-detailsFase5" class="phase-specific-content">
+                        <h3>Fase 5: Pruebas y Validación (UAT)</h3>
+                        <p class="text-sm mb-1"><strong>Objetivo:</strong> Que tú y tu equipo (SPoC y personal clave) prueben la solución Odoo para asegurar que cubre tus necesidades antes del arranque.</p>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">¿Qué hacemos?</h4>
+                        <ul>
+                            <li>Preparación de entorno de pruebas.</li>
+                            <li>Guía en ejecución de escenarios de prueba.</li>
+                            <li>Validación de funcionalidad, usabilidad y operación.</li>
+                            <li>Realización de ajustes (dentro del alcance).</li>
+                        </ul>
+                        <div class="entregable-item mt-3">Entregables: Registro de pruebas y ajustes; Sistema Odoo probado con visto bueno del SPoC</div>
+                    </div>
+                    <div id="content-detailsFase6" class="phase-specific-content">
+                        <h3>Fase 6: Capacitación del Equipo</h3>
+                        <p class="text-sm mb-1"><strong>Objetivo:</strong> Asegurar que tu equipo no solo comprenda el sistema y domine sus funcionalidades, sino que también se sienta empoderado para utilizar Odoo con confianza.</p>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">¿Qué hacemos?</h4>
+                        <ul>
+                            <li>Sesiones de capacitación (Gral. en línea) adaptadas a roles.</li>
+                            <li>Capacitación en uso de documentación oficial de Odoo.</li>
+                        </ul>
+                        <div class="entregable-item mt-3">Entregables: Usuarios capacitados; Videos de capacitación en repositorio</div>
+                    </div>
+                    <div id="content-detailsFase7" class="phase-specific-content">
+                        <h3>Fase 7: Go-Live y Soporte Inicial</h3>
+                        <p class="text-sm mb-1"><strong>Objetivo:</strong> ¡Llegó el día del arranque! Odoo comienza a operar. Brindamos acompañamiento cercano para una transición exitosa.</p>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">¿Qué hacemos?</h4>
+                        <ul>
+                            <li>Presencia el día del arranque (Gral. en línea).</li>
+                            <li>Soporte de estabilización: 10 horas (1er mes).</li>
+                            <li>Gestión posterior del soporte (póliza/hora).</li>
+                        </ul>
+                        <div class="entregable-item mt-3">Entregables: Sistema Odoo en producción; Registro de soporte inicial; Acta de Entrega-Recepción</div>
+                    </div>
+                    <div id="content-detailsFase8" class="phase-specific-content">
+                        <h3>Fase 8: Soporte y Evolución Continua</h3>
+                        <p class="text-sm mb-1"><strong>Objetivo:</strong> (Póliza Anual Opcional) Asegurar que Odoo funcione óptimamente y evolucione con tu negocio.</p>
+                        <h4 class="font-semibold text-sky-600 mt-3 mb-1">Servicios de Póliza (Ejemplos)</h4>
+                        <ul>
+                            <li>Mantenimiento preventivo, soporte técnico.</li>
+                            <li>Asistencia en nuevos módulos, ajustes, desarrollos.</li>
+                            <li>Capacitación adicional, asesoramiento en actualizaciones.</li>
+                        </ul>
+                        <div class="entregable-item mt-3">Entregable (Póliza): Acceso a soporte experto; Registro (tickets) de horas y actividades</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="detailsPrincipios" class="details-panel">
+                <button type="button" class="modal-close-btn" aria-label="Cerrar modal">&times;</button>
+                <h3>Principios Clave</h3>
+                <div class="principles-container mt-4"> 
+                    <div class="node principle-node"> 
+                        <div class="node-icon">🤝</div>
+                        <h2 class="node-title">Colaboración y Co-creación</h2>
+                        <p>Considera a nuestro equipo como una extensión del tuyo.</p>
+                    </div>
+                    <div class="node principle-node">
+                        <div class="node-icon">📢</div>
+                        <h2 class="node-title">Comunicación Transparente</h2>
+                        <p>Te mantenemos informado para que siempre tengas claridad.</p>
+                    </div>
+                    <div class="node principle-node">
+                        <div class="node-icon">⭐</div>
+                        <h2 class="node-title">Calidad y Excelencia</h2>
+                        <p>Aplicamos nuestra experiencia para entregarte la mejor solución Odoo.</p>
+                    </div>
+                    <div class="node principle-node">
+                        <div class="node-icon">🛡️</div>
+                        <h2 class="node-title">Gestión Proactiva</h2>
+                        <p>Anticipamos obstáculos y trabajamos para un proyecto sin sorpresas.</p>
+                    </div>
+                    <div class="node principle-node">
+                        <div class="node-icon">🎯</div>
+                        <h2 class="node-title">Compromiso con tus Resultados</h2>
+                        <p>Tu éxito es el motor de nuestro trabajo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mainNodes = document.querySelectorAll('#nodePreliminar, #nodeFases, #nodePrincipios');
+        const topLevelModals = document.querySelectorAll('#detailsContainer > .details-panel'); 
+        
+        const phaseNodesInDetailsFases = document.querySelectorAll('#detailsFases .phase-node[data-target]');
+        const phaseDetailContentArea = document.getElementById('phase-detail-content-area');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+
+        const allPhaseSpecificContents = document.querySelectorAll('#phase-detail-content-area > .phase-specific-content');
+
+
+        function closeAllOpenModals() {
+            topLevelModals.forEach(modal => modal.classList.remove('active'));
+            allPhaseSpecificContents.forEach(content => content.classList.remove('active'));
+            mainNodes.forEach(n => n.classList.remove('node-active'));
+            phaseNodesInDetailsFases.forEach(n => n.classList.remove('phase-detail-active')); 
+            
+            if (modalBackdrop) {
+                modalBackdrop.classList.remove('active');
+            }
+        }
+
+        function openTopLevelModal(targetPanel, triggerNode) {
+            if (!targetPanel) return;
+            closeAllOpenModals(); 
+
+            targetPanel.classList.add('active');
+            if (triggerNode) {
+                triggerNode.classList.add('node-active');
+            }
+            if (modalBackdrop) {
+                modalBackdrop.classList.add('active');
+            }
+        }
+        
+        mainNodes.forEach(node => {
+            node.addEventListener('click', function() {
+                const targetId = this.dataset.target;
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel && !targetPanel.classList.contains('active')) {
+                    openTopLevelModal(targetPanel, this);
+                } else {
+                    closeAllOpenModals(); 
+                }
+            });
+        });
+
+        phaseNodesInDetailsFases.forEach(phaseNode => {
+            phaseNode.addEventListener('click', function(event) {
+                event.stopPropagation(); 
+
+                const targetContentId = 'content-' + this.dataset.target; 
+                const targetContentPanel = document.getElementById(targetContentId);
+
+                phaseNodesInDetailsFases.forEach(pn => {
+                    if (pn !== this) {
+                        pn.classList.remove('phase-detail-active');
+                    }
+                });
+                allPhaseSpecificContents.forEach(content => {
+                    if (content !== targetContentPanel) {
+                        content.classList.remove('active');
+                    }
+                });
+                
+                if (targetContentPanel) {
+                    if (targetContentPanel.classList.contains('active')) {
+                        targetContentPanel.classList.remove('active');
+                        this.classList.remove('phase-detail-active');
+                    } else {
+                        targetContentPanel.classList.add('active');
+                        this.classList.add('phase-detail-active');
+                        
+                        setTimeout(() => {
+                            const modalFases = document.getElementById('detailsFases');
+                            if (phaseDetailContentArea && modalFases) { 
+                                modalFases.scrollTo({
+                                    top: phaseDetailContentArea.offsetTop - 20, 
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }, 50); 
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.modal-close-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                closeAllOpenModals();
+            });
+        });
+    </script>
+
+    <script>
+        const particleCanvas = document.getElementById('particle-canvas');
+        const ctxParticles = particleCanvas.getContext('2d');
+        let particlesArray;
+
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 100 
+        };
+
+        function setCanvasSize() {
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', () => {
+            setCanvasSize();
+            initParticles(); 
+        });
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX; 
+                this.directionY = directionY; 
+                this.speedX = Math.random() * 0.3 + 0.1; 
+                this.speedY = Math.random() * 0.3 + 0.1; 
+                this.size = size; 
+                this.color = color; 
+            }
+
+            draw() {
+                ctxParticles.beginPath();
+                ctxParticles.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctxParticles.fillStyle = this.color;
+                ctxParticles.fill();
+            }
+
+            update() {
+                if (this.x + this.size > particleCanvas.width || this.x - this.size < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y + this.size > particleCanvas.height || this.y - this.size < 0) {
+                    this.directionY = -this.directionY;
+                }
+                this.x += this.directionX * this.speedX;
+                this.y += this.directionY * this.speedY;
+                this.draw(); 
+            }
+        }
+
+        // Colores de partículas para TEMA CLARO
+        const PARTICLE_COUNT = 80;    
+        const PARTICLE_RADIUS = 1.2; 
+        const MAX_CONNECT_DISTANCE = 130; 
+        const MOUSE_CONNECT_DISTANCE = 180; 
+        const PARTICLE_COLOR_LIGHT = 'rgba(0, 119, 182, 0.3)'; 
+        const LINE_COLOR_BASE_PARTICLES_LIGHT = '0, 119, 182'; 
+        const LINE_COLOR_BASE_MOUSE_LIGHT = '5, 150, 105';    
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                let size = Math.random() * 0.5 + PARTICLE_RADIUS; 
+                let x = Math.random() * (particleCanvas.width - size * 2) + size;
+                let y = Math.random() * (particleCanvas.height - size * 2) + size;
+                let directionX = (Math.random() < 0.5) ? -1 : 1;
+                let directionY = (Math.random() < 0.5) ? -1 : 1;
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, PARTICLE_COLOR_LIGHT));
+            }
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a + 1; b < particlesArray.length; b++) {
+                    const dx = particlesArray[a].x - particlesArray[b].x;
+                    const dy = particlesArray[a].y - particlesArray[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < MAX_CONNECT_DISTANCE) {
+                        const opacity = 1 - (distance / MAX_CONNECT_DISTANCE);
+                        ctxParticles.strokeStyle = `rgba(${LINE_COLOR_BASE_PARTICLES_LIGHT}, ${opacity * 0.5})`; 
+                        ctxParticles.lineWidth = 0.6; 
+                        ctxParticles.beginPath();
+                        ctxParticles.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctxParticles.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctxParticles.stroke();
+                    }
+                }
+                if (mouse.x !== undefined && mouse.y !== undefined) {
+                    const dxMouse = particlesArray[a].x - mouse.x;
+                    const dyMouse = particlesArray[a].y - mouse.y;
+                    const distanceMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+                    if (distanceMouse < MOUSE_CONNECT_DISTANCE) {
+                         const opacity = 1 - (distanceMouse / MOUSE_CONNECT_DISTANCE);
+                         ctxParticles.strokeStyle = `rgba(${LINE_COLOR_BASE_MOUSE_LIGHT}, ${opacity * 0.3})`; 
+                         ctxParticles.lineWidth = 0.3; 
+                         ctxParticles.beginPath();
+                         ctxParticles.moveTo(particlesArray[a].x, particlesArray[a].y);
+                         ctxParticles.lineTo(mouse.x, mouse.y);
+                         ctxParticles.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctxParticles.clearRect(0, 0, particleCanvas.width, particleCanvas.height); 
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update(); 
+            }
+            connectParticles(); 
+            requestAnimationFrame(animateParticles); 
+        }
+
+        setCanvasSize();
+        initParticles();
+        animateParticles();
+    </script>
+
+</body>
+</html>
