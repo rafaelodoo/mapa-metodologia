@@ -78,9 +78,6 @@
             border: 1px solid #D1D5DB; 
             position: relative; 
             overflow: hidden; 
-            /* backdrop-filter: blur(10px); */ /* Comentado de tu código original, puede causar problemas de rendimiento */
-            /* background: rgba(255, 255, 255, 0.9); */ /* Comentado, .node ya tiene background-color: #FFFFFF */
-            /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); */ /* Comentado, .node ya tiene box-shadow */
         }
         
         .node::before {
@@ -90,7 +87,7 @@
             left: 50%;
             width: 200%; 
             height: 200%;
-            transform: translate(-50%, -50%) rotate(0deg); 
+            /* transform: translate(-50%, -50%) rotate(0deg); 
             border-radius: 14px; 
             background: conic-gradient(
                 from 0deg,
@@ -99,7 +96,7 @@
                 #0077B6 180deg, 
                 #0EA5E9 270deg, 
                 #00A5E0 360deg 
-            );
+            ); */
             animation: spin-border 2.5s linear infinite;
             z-index: -1; 
             opacity: 0; 
@@ -166,7 +163,7 @@
             font-family: 'Roboto Mono', monospace;
             font-size: 1.6rem;
             font-weight: 600;
-            color: #1F2937; /* color: var(--text-primary); */
+            color: #1F2937; 
             margin-bottom: 0.5rem;
             letter-spacing: -0.02em;
         }
@@ -178,28 +175,22 @@
             color: #4B5563; 
             margin-bottom: 1rem;
         }
-        .node-icon { /* Para los iconos de los 3 nodos principales */
-            font-size: 2.5rem; /* Tamaño base para emojis/texto */
+        .node-icon { 
+            font-size: 2.5rem; 
             margin-bottom: 1rem;
-            display: flex; /* Para centrar la imagen si se usa */
+            display: flex; 
             justify-content: center;
             align-items: center;
             transition: transform 0.3s ease;
         }
-        .node-icon img { /* Estilo para las imágenes dentro de .node-icon */
-             height: 80px; /* Altura base de tu HTML */
-             width: auto;
-             object-fit: contain;
-        }
-        .node.central-node .node-icon img {
-            height: 120px; /* Altura específica para el logo central */
-        }
-
+       
         .node:hover .node-icon { 
             transform: scale(1.1) rotate(5deg);
         }
-        /* .node.central-node .node-icon se maneja por la imagen */
-        
+        .node.central-node .node-icon { /* Específico para el nodo central si usa emoji/texto */
+            color: #E0F2FE; 
+            animation: central-icon-float 3s infinite ease-in-out; 
+        }
         @keyframes central-icon-float { 
             0% { transform: translateY(0px) scale(1.0); }
             50% { transform: translateY(-5px) scale(1.05); }
@@ -224,7 +215,7 @@
             transform: translate(-50%, -50%) scale(0.95); 
             transform-origin: center center; 
             pointer-events: none; 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Usando tu transición */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
             
             padding: 2rem; 
             overflow-y: auto; 
@@ -359,25 +350,28 @@
              padding-right: 0.8rem; 
         }
 
-
         #detailsFases .phase-node:hover {
             background-color: #E0F2FE; 
             border-color: #BAE6FD; 
             color: #1C3D5A;
         }
+        /* Estilo para el chevron de fase activa: solo borde y texto, sin relleno completo */
         #detailsFases .phase-node.phase-detail-active { 
-            background-color: #0077B6; 
-            border-color: #005A8D;
-            color: #FFFFFF; 
+            background-color: #E0F2FE; /* Un fondo ligeramente diferente al hover normal */
+            border-color: #0077B6; /* Borde azul principal más prominente */
+            color: #005A8D; /* Texto más oscuro para contraste con fondo claro */
+            box-shadow: 0 0 8px rgba(0, 119, 182, 0.2); /* Sombra sutil */
         }
-        #detailsFases .phase-node.phase-detail-active .node-title,
+        #detailsFases .phase-node.phase-detail-active .node-title {
+            color: #005A8D; 
+        }
         #detailsFases .phase-node.phase-detail-active .node-subtitle {
-            color: #FFFFFF; 
+            color: #0077B6; 
         }
         #detailsFases .phase-node.phase-detail-active .node-icon {
-             background-color: #FFFFFF; 
-             color: #0077B6; 
-             border-color: #FFFFFF;
+             background-color: #0077B6; /* Icono con fondo azul */
+             color: #FFFFFF; /* Texto del icono blanco */
+             border-color: #005A8D;
         }
         
         #detailsFases .phase-node .node-icon { 
@@ -403,7 +397,7 @@
             border-color: #00A5E0;
         }
 
-        #detailsFases .phase-node > div { /* Contenedor de título y subtítulo */
+        #detailsFases .phase-node > div { 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -424,7 +418,7 @@
         /* Media Query para distribuir chevrons en pantallas anchas (1440px+) */
         @media (min-width: 1440px) {
             #detailsFases .phases-container {
-                justify-content: space-around; /* Cambiado para mejor distribución */
+                justify-content: space-around; 
                 overflow-x: hidden; 
                 gap: 4px; 
             }
@@ -443,28 +437,45 @@
             }
         }
         
-        /* Media Query para chevrons compactos en pantallas pequeñas (< 768px) */
+        /* Media Query para fases como círculos/cuadros en móviles (< 768px) */
         @media (max-width: 767px) {
             #detailsFases .phases-container {
                 flex-wrap: wrap;
-                justify-content: center;
-                overflow-x: hidden; /* No scroll horizontal, se envuelven */
-                gap: 6px; 
+                justify-content: center; /* Centra los círculos/cuadros */
+                overflow-x: hidden;
+                gap: 10px; /* Espacio entre círculos/cuadros */
+                padding-bottom: 1rem; /* Menos padding si hay scrollbar */
             }
             #detailsFases .phase-node {
-                flex-direction: column; /* Icono arriba */
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                min-width: 60px; 
-                height: 60px; 
-                padding: 0.3rem; /* Padding general para el contenido interno */
+                min-width: 50px; /* Tamaño base para los círculos/cuadros */
+                width: 50px;  /* Ancho fijo */
+                height: 50px; /* Alto fijo */
+                padding: 0.2rem; /* Padding interno mínimo */
                 gap: 0; 
-                --chevron-cut: 10px; /* Punta menos pronunciada para elementos pequeños */
+                clip-path: none; /* Quitar forma de chevron */
+                border-radius: 50%; /* Hacerlos círculos */
+                /* Para cuadrados, usar: border-radius: 8px; */
+                --chevron-cut: 0px; /* No relevante para círculos/cuadrados */
+                background-color: #E0F2FE; /* Fondo azul claro para los círculos */
+                border: 1px solid #BAE6FD;
+            }
+            #detailsFases .phase-node.phase-detail-active {
+                background-color: #0077B6; /* Azul principal para activo */
+                border-color: #005A8D;
             }
             #detailsFases .phase-node .node-icon {
-                font-size: 0.9rem; /* Tamaño del texto Fx */
-                padding: 0.3em 0.5em;
-                margin-bottom: 0; /* Sin margen inferior si solo está el icono */
+                font-size: 1rem; /* Tamaño del texto Fx */
+                padding: 0;
+                margin-bottom: 0;
+                border: none; /* Sin borde para el texto Fx */
+                background-color: transparent; /* Sin fondo para el texto Fx */
+                color: #1E3A8A; /* Color de texto para Fx */
+            }
+            #detailsFases .phase-node.phase-detail-active .node-icon {
+                color: #FFFFFF; /* Texto Fx blanco en círculo activo */
             }
             #detailsFases .phase-node > div { /* Contenedor de título y subtítulo */
                 display: none !important; /* Ocultar título y subtítulo */
@@ -476,14 +487,13 @@
             width: 100%;
             overflow: visible; 
             position: relative; 
-            /* flex-grow: 1; REMOVED - Let content define height */
-            /* min-height: 100px; REMOVED - Let content define height */
+            /* flex-grow: 1; No es necesario si el modal es el que scrollea */
         }
         .phase-specific-content {
             opacity: 0;
             max-height: 0;
             overflow: hidden; 
-            transform: translateY(20px) scaleY(0.98); 
+            transform: translateY(20px) scale(0.98); 
             transform-origin: top;
             transition: opacity 0.35s cubic-bezier(0.215, 0.61, 0.355, 1), 
                         transform 0.35s cubic-bezier(0.215, 0.61, 0.355, 1), 
@@ -494,9 +504,9 @@
         }
         .phase-specific-content.active {
             opacity: 1;
-            max-height: none; /* Permitir que el contenido tome su altura natural */
+            max-height: none; 
             transform: translateY(0) scaleY(1);
-            overflow: visible; /* Asegurar que el contenido no se corte */
+            overflow: visible; 
         }
         .phase-specific-content h3 {  
             font-family: 'Roboto Mono', monospace;
@@ -627,23 +637,6 @@
             gap: 2rem;
             padding: 2rem;
         }
-
-        /* Mejoras en dispositivos móviles */
-        /* @media (max-width: 768px) { */ /* Comentado ya que hay una media query más específica abajo */
-            /* .node {
-                padding: 1rem;
-            }
-            
-            .node-title {
-                font-size: 1.25rem;
-            }
-            
-            .details-panel {
-                width: 100%;
-                height: 100%;
-                border-radius: 0;
-            } */
-        /* } */
     </style>
 </head>
 <body>
@@ -651,7 +644,6 @@
     <div id="modal-backdrop" class="modal-backdrop"></div>
 
     <div class="mindmap-canvas">
-
 
 
         <div id="centralNode" class="node central-node">
@@ -678,8 +670,8 @@
         </div>
 
 
-
         
+
         <div id="detailsContainer"> 
             <div id="detailsPreliminar" class="details-panel">
                 <button type="button" class="modal-close-btn" aria-label="Cerrar modal" role="button" tabindex="0">&times;</button>
