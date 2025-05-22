@@ -72,15 +72,46 @@
             overflow: hidden; 
         }
         
-        /* Eliminada la regla .node::before para la animación de borde */
+        .node::before {
+            content: "";
+            position: absolute;
+            top: 50%; 
+            left: 50%;
+            width: 200%; 
+            height: 200%;
+            transform: translate(-50%, -50%) rotate(0deg); 
+            border-radius: 14px; 
+            background: conic-gradient(
+                from 0deg,
+                #00A5E0, 
+                #3B82F6 90deg, 
+                #0077B6 180deg, 
+                #0EA5E9 270deg, 
+                #00A5E0 360deg 
+            );
+            animation: spin-border 2.5s linear infinite;
+            z-index: -1; 
+            opacity: 0; 
+            transition: opacity 0.3s ease-out;
+        }
 
         .node:hover {
             transform: translateY(-6px) scale(1.03); 
             box-shadow: 0 20px 25px -5px rgba(0, 119, 182, 0.15), 0 10px 10px -5px rgba(0, 119, 182, 0.1); 
-            border-color: #0077B6; /* Restaurado el color de borde en hover */
+            border-color: transparent; 
         }
-        
-        /* Eliminada la regla @keyframes spin-border */
+        .node:hover::before {
+            opacity: 1; 
+        }
+        .node.central-node:hover::before { 
+            opacity: 0;
+        }
+
+
+        @keyframes spin-border {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
 
 
         .node.node-active { 
@@ -258,18 +289,18 @@
             flex-wrap: nowrap;   
             overflow-x: auto; 
             overflow-y: hidden;
-            gap: 6px;      
+            gap: 5px;      
             align-items: stretch; 
             padding-top: 1rem; 
-            padding-bottom: 2rem; 
+            padding-bottom: 1.5rem; 
             margin-top: 0; 
             border-bottom: 1px solid #E5E7EB; 
             margin-bottom: 1.5rem; 
             flex-shrink: 0; 
         }
-        #detailsFases .phases-container::-webkit-scrollbar { height: 8px; }
-        #detailsFases .phases-container::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 4px; } 
-        #detailsFases .phases-container::-webkit-scrollbar-thumb { background: #9CA3AF; border-radius: 4px; }
+        #detailsFases .phases-container::-webkit-scrollbar { height: 6px; } 
+        #detailsFases .phases-container::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 3px; } 
+        #detailsFases .phases-container::-webkit-scrollbar-thumb { background: #9CA3AF; border-radius: 3px; }
         #detailsFases .phases-container::-webkit-scrollbar-thumb:hover { background: #6B7280; }
 
         #detailsFases .phases-container::before { 
@@ -277,28 +308,33 @@
         }
 
         #detailsFases .phase-node {
-            --chevron-cut: 20px; 
+            --chevron-cut: 18px; 
             display: flex; 
+            flex-direction: column; 
             align-items: center; 
-            gap: 0.75rem;        
+            gap: 0.3rem;      
             background-color: #F3F4F6; 
             color: #1E3A8A; 
-            padding: 0.8rem calc(var(--chevron-cut) + 0.5rem) 0.8rem calc(var(--chevron-cut) + 0.75rem); 
+            padding: 0.6rem 0.5rem; 
             border-radius: 0; 
             border: 1px solid #D1D5DB; 
-            text-align: left;  
+            text-align: center;  
             margin-left: 0; 
             transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
             cursor: pointer; 
             flex-shrink: 0; 
-            min-width: 230px; 
+            min-width: 140px; 
             position: relative; 
             clip-path: polygon(0% 0%, calc(100% - var(--chevron-cut)) 0%, 100% 50%, calc(100% - var(--chevron-cut)) 100%, 0% 100%, var(--chevron-cut) 50%);
         }
         #detailsFases .phase-node:first-child {
             clip-path: polygon(0% 0%, calc(100% - var(--chevron-cut)) 0%, 100% 50%, calc(100% - var(--chevron-cut)) 100%, 0% 100%);
-            padding-left: 1.25rem; 
+            padding-left: 0.8rem; 
         }
+         #detailsFases .phase-node:last-child { 
+            clip-path: polygon(0% 0%, calc(100% - var(--chevron-cut)) 0%, 100% 50%, calc(100% - var(--chevron-cut)) 100%, 0% 100%, var(--chevron-cut) 50%);
+        }
+
 
         #detailsFases .phase-node:hover {
             background-color: #E0F2FE; 
@@ -324,14 +360,14 @@
             position: static; 
             transform: none;  
             width: auto; height: auto; 
-            padding: 0.4em 0.6em; 
-            font-size: 0.9rem;   
+            padding: 0.25em 0.45em; 
+            font-size: 0.75rem;   
             font-weight: 700;
             font-family: 'Roboto Mono', monospace;
             border: 2px solid; 
             border-radius: 6px; 
             line-height: 1; 
-            margin: 0; 
+            margin: 0 0 0.2rem 0; 
             flex-shrink: 0; 
             color: #0077B6; 
             border-color: #00A5E0; 
@@ -344,15 +380,59 @@
         }
 
         #detailsFases .phase-node .node-title { 
-            font-size: 0.95rem; 
-            margin-bottom: 0.1rem;
+            font-size: 0.8rem; 
+            margin-bottom: 0.05rem;
             font-weight: 600;
+            line-height: 1.1; 
         }
         #detailsFases .phase-node .node-subtitle { 
-            font-size: 0.75rem; 
+            font-size: 0.6rem; 
             margin-bottom: 0;
+            line-height: 1.1;
         }
         
+        /* Media Query para distribuir chevrons en pantallas anchas (1440px+) */
+        @media (min-width: 1440px) {
+            #detailsFases .phases-container {
+                justify-content: space-between; 
+                overflow-x: hidden; 
+                gap: 4px; 
+            }
+            #detailsFases .phase-node {
+                flex-grow: 1; 
+                flex-basis: 0; 
+                min-width: auto; 
+            }
+        }
+        
+        /* Media Query para chevrons compactos en pantallas pequeñas (< 768px) */
+        @media (max-width: 767px) {
+            #detailsFases .phases-container {
+                flex-wrap: wrap;
+                justify-content: center;
+                overflow-x: hidden;
+                gap: 8px; /* Aumentar un poco el gap para cuando envuelven */
+            }
+            #detailsFases .phase-node {
+                flex-direction: column;
+                align-items: center;
+                min-width: 65px; /* Más compacto */
+                height: 65px; /* Altura fija para uniformidad */
+                padding: 0.4rem;
+                gap: 0.1rem; /* Menos espacio entre icono y (oculto) texto */
+                --chevron-cut: 10px; /* Punta menos pronunciada */
+            }
+            #detailsFases .phase-node .node-icon {
+                font-size: 1rem; /* Icono "Fx" más grande */
+                padding: 0.3em 0.5em;
+                margin-bottom: 0;
+            }
+            #detailsFases .phase-node > div { /* Contenedor de título y subtítulo */
+                display: none !important; /* Ocultar título y subtítulo */
+            }
+        }
+
+
         #phase-detail-content-area {
             width: 100%;
             overflow: visible; 
@@ -490,13 +570,12 @@
     <div id="modal-backdrop" class="modal-backdrop"></div>
 
     <div class="mindmap-canvas">
-       <div id="centralNode" class="node central-node">
-            <div class="node-icon"><img src="DICC.png" style="height: 120px;"></div>
-            <h1>Metodología <span style="color: #714B67;">Odoo</span></h1> <p>Tu viaje estratégico a la transformación digital con DIC Consultores</p>
+        <div id="centralNode" class="node central-node">
+            <div class="node-icon">🚀</div>
+            <h1>Metodología <span style="color: #10B981;">Odoo</span></h1> <p>Tu viaje estratégico a la transformación digital con DIC Consultores</p>
         </div>
         
         <div class="connection-area"><div class="connector-line"></div></div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-6xl">
             <div id="nodePreliminar" class="node" data-target="detailsPreliminar">
                 <div class="node-icon" style="color: #2563EB;"><img src="cliente.png" style="height: 80px;"></div> <h2 class="node-title">Etapa Preliminar</h2>
@@ -542,56 +621,56 @@
                         <div class="node-icon">F1</div>
                         <div>
                             <h2 class="node-title">Diagnóstico</h2>
-                            <p class="node-subtitle">Definición de la hoja de ruta</p>
+                            <p class="node-subtitle">Hoja de Ruta</p>
                         </div>
                     </div>
                     <div class="node phase-node" data-target="detailsFase2">
                         <div class="node-icon">F2</div>
                         <div>
-                            <h2 class="node-title">Diseño y Flujos en Odoo</h2>
-                            <p class="node-subtitle">Creación de nuevos flujos de trabajo</p>
+                            <h2 class="node-title">Diseño y Flujos</h2>
+                            <p class="node-subtitle">Nuevos Flujos</p>
                         </div>
                     </div>
                     <div class="node phase-node" data-target="detailsFase3">
                         <div class="node-icon">F3</div>
                         <div>
-                            <h2 class="node-title">BD, Config. Inicial e Importación</h2>
-                            <p class="node-subtitle">Establecimiento del entorno y datos</p>
+                            <h2 class="node-title">BD y Config.</h2>
+                            <p class="node-subtitle">Entorno y Datos</p>
                         </div>
                     </div>
                     <div class="node phase-node" data-target="detailsFase4">
                         <div class="node-icon">F4</div>
                         <div>
-                            <h2 class="node-title">Config. Específica y Desarrollo</h2>
-                            <p class="node-subtitle">Ajustes a medida y funcionalidad</p>
+                            <h2 class="node-title">Desarrollo</h2>
+                            <p class="node-subtitle">Ajustes Medida</p>
                         </div>
                     </div>
                     <div class="node phase-node" data-target="detailsFase5">
                         <div class="node-icon">F5</div>
                         <div>
-                            <h2 class="node-title">Pruebas y Validación (UAT)</h2>
-                            <p class="node-subtitle">Asegurando la calidad contigo</p>
+                            <h2 class="node-title">Pruebas (UAT)</h2>
+                            <p class="node-subtitle">Calidad y Pruebas</p>
                         </div>
                     </div>
                     <div class="node phase-node" data-target="detailsFase6">
                         <div class="node-icon">F6</div>
                         <div>
-                            <h2 class="node-title">Capacitación del Equipo</h2>
-                            <p class="node-subtitle">Empoderando a tus usuarios</p>
+                            <h2 class="node-title">Capacitación</h2>
+                            <p class="node-subtitle">Empoderamiento</p>
                         </div>
                     </div>
                     <div class="node phase-node" data-target="detailsFase7">
                         <div class="node-icon">F7</div>
                         <div>
-                            <h2 class="node-title">Go-Live y Soporte Inicial</h2>
-                            <p class="node-subtitle">Arranque y estabilización</p>
+                            <h2 class="node-title">Go-Live</h2>
+                            <p class="node-subtitle">Arranque Inicial</p>
                         </div>
                     </div>
                     <div class="node phase-node" data-target="detailsFase8">
                         <div class="node-icon">F8</div>
                         <div>
-                            <h2 class="node-title">Soporte y Evolución Continua</h2>
-                            <p class="node-subtitle">Alianza a largo plazo (Opcional)</p>
+                            <h2 class="node-title">Soporte Cont.</h2>
+                            <p class="node-subtitle">Alianza Opcional</p>
                         </div>
                     </div>
                 </div>
