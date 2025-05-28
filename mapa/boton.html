@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botón con Borde Animado por JS</title>
+    <style>
+        /* Estilos para centrar el botón en la página y un fondo oscuro para demostración */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0a0a0a; /* Un fondo muy oscuro para que el botón resalte */
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .animated-border-button-js {
+            /* Variables CSS para fácil personalización */
+            /* --r y --x serán establecidas por JavaScript */
+            --border-thickness: 3px;
+            --color-blue-bright: #00c6ff;
+            --color-green-bright: #00ff95;
+            --color-border-dim: #2a3b34; /* Un poco más visible que antes */
+            --button-bg: #181818;
+            --text-color: #ffffff;
+            --border-radius: 10px;
+            --padding-vertical: 0.8em;
+            --padding-horizontal: 1.7em;
+            /* Longitud del segmento brillante del borde (en grados) */
+            --shine-length: 60deg; /* Aumentado para más visibilidad */
+
+
+            position: relative;
+            z-index: 1;
+            
+            background: transparent; 
+            padding: var(--border-thickness);
+            border: none;
+            border-radius: var(--border-radius);
+            
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            outline: none;
+        }
+
+        .animated-border-button-js span {
+            display: block;
+            background: var(--button-bg);
+            color: var(--text-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: var(--padding-vertical) var(--padding-horizontal);
+            border-radius: calc(var(--border-radius) - var(--border-thickness)); 
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .animated-border-button-js::before {
+            content: '';
+            position: absolute;
+            top: 0; 
+            left: 0;
+            width: 100%;
+            height: 100%;
+            
+            border-radius: var(--border-radius);
+            z-index: 1;
+            
+            /* El gradiente cónico ahora usa var(--r) para el ángulo inicial,
+               y var(--x) podría usarse para la posición del "shine" o su intensidad.
+               Aquí, --r controlará la rotación.
+               El "shine" es un segmento del gradiente.
+            */
+            background: conic-gradient(
+                from var(--r, 0deg) at 50% 50%, /* --r es el ángulo de rotación, default 0deg */
+                var(--color-border-dim) 0deg,
+                var(--color-blue-bright) var(--shine-start, 0deg), /* Inicio del brillo */
+                var(--color-green-bright) var(--shine-mid, 15deg),  /* Mitad del brillo */
+                var(--color-blue-bright) var(--shine-end, 30deg),   /* Fin del brillo */
+                var(--color-border-dim) var(--shine-end-dim, 30.1deg) /* Vuelta al color tenue */
+            );
+        }
+        
+        .animated-border-button-js:active span {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); 
+        }
+    </style>
+</head>
+<body>
+
+    <a href="#" class="animated-border-button-js">
+        <span>Login</span>
+    </a>
+
+    <script>
+        const button = document.querySelector('.animated-border-button-js');
+        let rotationAngle = 0;
+        // Velocidad de rotación (grados por fotograma)
+        // Puedes ajustar este valor para cambiar la velocidad de la animación.
+        const rotationSpeed = 0.8; // Más lento para apreciar el efecto
+
+        // Longitud del segmento brillante (en grados)
+        const shineDegrees = parseFloat(getComputedStyle(button).getPropertyValue('--shine-length').trim() || '60');
+
+
+        function animateBorder() {
+            rotationAngle = (rotationAngle + rotationSpeed) % 360;
+            
+            // Calcular los puntos de inicio y fin del segmento brillante
+            // Queremos que el segmento brillante "viaje" alrededor.
+            // El gradiente cónico se define por paradas de color.
+            // Haremos que el segmento brillante ocupe 'shineDegrees'.
+            
+            // El gradiente se define así:
+            // color_tenue ... color_tenue | inicio_brillo azul | medio_brillo verde | fin_brillo azul | color_tenue ...
+            
+            const shineStart = 0; // El brillo siempre comienza en el mismo punto relativo del "cono de luz"
+            const shineMid = shineDegrees / 2;
+            const shineEnd = shineDegrees;
+            const shineEndDim = shineDegrees + 0.1 > 360 ? 360 : shineDegrees + 0.1; // Para evitar solapamiento con 0
+
+            button.style.setProperty('--r', `${rotationAngle}deg`);
+            button.style.setProperty('--shine-start', `${shineStart}deg`);
+            button.style.setProperty('--shine-mid', `${shineMid}deg`);
+            button.style.setProperty('--shine-end', `${shineEnd}deg`);
+            button.style.setProperty('--shine-end-dim', `${shineEndDim}deg`);
+
+
+            requestAnimationFrame(animateBorder);
+        }
+
+        // Iniciar la animación
+        requestAnimationFrame(animateBorder);
+    </script>
+
+</body>
+</html>

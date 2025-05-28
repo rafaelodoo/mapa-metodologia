@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botón Animado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Definición de la fuente Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000; /* Fondo oscuro para que el botón resalte */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Contenedor del botón (ya no es tan crítico para el overflow con esta técnica, pero lo mantenemos) */
+        .button-container {
+            border-radius: 0.75rem; /* rounded-xl de Tailwind */
+        }
+
+        /* Estilo base del botón */
+        .animated-button {
+            padding: 1rem 2.5rem; /* p-4 px-10 de Tailwind */
+            font-size: 1.25rem; /* text-xl de Tailwind */
+            font-weight: 600; /* font-semibold de Tailwind */
+            color: white;
+            border: none;
+            border-radius: 0.75rem; /* rounded-xl de Tailwind */
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.3s ease-in-out; /* Transición para un efecto de hover */
+
+            /* Nuevo degradado más amplio para el efecto de brillo */
+            background: linear-gradient(
+                to right,
+                #d53f8c 0%,       
+                #a22f6a 25%,      
+                #d53f8c 50%,      
+                #a22f6a 75%,
+                #d53f8c 100%
+            );
+            background-size: 200% auto; /* Hace que el fondo sea el doble de ancho que el botón */
+            background-position: 0% 0%; /* Posición inicial del fondo */
+            animation: slideShine 3s linear infinite; /* Animación de movimiento del brillo */
+        }
+
+        /* Animación del efecto de brillo deslizante */
+        @keyframes slideShine {
+            0% {
+                background-position: 0% 0%; /* El degradado empieza a la izquierda */
+            }
+            100% {
+                background-position: -100% 0%; /* El degradado se mueve completamente a la izquierda */
+            }
+        }
+
+        /* Efecto de hover para el botón */
+        .animated-button:hover {
+            transform: scale(1.05); /* Ligeramente más grande al pasar el ratón */
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button class="animated-button">
+            Comprar Ahora
+        </button>
+    </div>
+</body>
+</html>

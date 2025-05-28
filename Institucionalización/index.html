@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIC Consultores - Institucionalización y Estandarización Empresarial</title>
+    <meta name="description" content="Fortalezca su negocio, optimice procesos y asegure el crecimiento con nuestros servicios de institucionalización y estandarización. ¡Solicite un diagnóstico!">
+    <style>
+        :root {
+            --primary-color: #003366; /* Azul Oscuro DIC */
+            --secondary-color: #d11f26; /* Rojo DIC */
+            --text-color: #333333;
+            --light-bg: #f4f4f4;
+            --white: #ffffff;
+            --font-main: 'Arial', sans-serif;
+        }
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background: var(--white);
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        header img { max-width: 200px; }
+        .hero {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+            background-size: cover; /* Para imagen de fondo */
+            background-position: center;
+        }
+        .hero h1 { font-size: 2.8em; margin-bottom: 10px; }
+        .hero p { font-size: 1.3em; margin-bottom: 30px; }
+        .cta-button {
+            background: var(--secondary-color);
+            color: var(--white);
+            padding: 15px 35px;
+            text-decoration: none;
+            font-size: 1.2em;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .cta-button:hover { background: #a0181e; }
+        section { padding: 60px 0; }
+        section h2 {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+        .pain-points { background: var(--light-bg); }
+        .pain-points ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+        .pain-points li {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .pain-points li strong {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+            display: block;
+            margin-bottom: 10px;
+        }
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .service-card {
+            border: 1px solid #ddd;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            transition: box-shadow 0.3s ease;
+        }
+        .service-card:hover { box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+        .service-card h3 { color: var(--primary-color); margin-top: 15px; }
+        .service-card img { max-width: 80px; margin-bottom: 15px; }
+        .storytelling { background: var(--light-bg); text-align: center; }
+        .storytelling .container { max-width: 900px; }
+        .storytelling h3 { color: var(--secondary-color); font-size: 1.5em; }
+        .storytelling p { font-size: 1.1em; }
+        .benefits ul {
+            list-style: '✔';
+            padding-left: 20px;
+            font-size: 1.1em;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .benefits li { margin-bottom: 15px; padding-left: 10px;}
+        .methodology { text-align: center; }
+        .methodology .steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .methodology .step {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .methodology .step span { font-size: 2em; display: block; }
+        .trust { background: var(--light-bg); text-align: center; }
+        .trust .logos { display: flex; justify-content: center; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; }
+        .trust .logos img { max-height: 60px; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s ease; }
+        .trust .logos img:hover { filter: grayscale(0%); opacity: 1; }
+        .testimonial {
+            background: var(--white);
+            padding: 30px;
+            border-left: 5px solid var(--secondary-color);
+            margin: 0 auto;
+            max-width: 700px;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+        .final-cta { background: var(--primary-color); color: var(--white); text-align: center; }
+        .final-cta h2 { color: var(--white); }
+        .contact-form {
+            max-width: 600px;
+            margin: 30px auto 0;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+        .contact-form label { display: block; margin-bottom: 8px; color: var(--text-color); font-weight: bold;}
+        .contact-form input, .contact-form textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .contact-form button {
+            background: var(--secondary-color);
+            color: var(--white);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+        .contact-form button:hover { background: #a0181e; }
+        footer {
+            background: #333;
+            color: #ccc;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9em;
+        }
+        footer a { color: var(--white); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <img src="logo-dic-consultores.png" alt="DIC Consultores Logo">
+        </div>
+    </header>
+
+    <section class="hero" style="background-image: url('hero-background.jpg');">
+        <div class="container">
+            <h1>Transforme su Visión en un Legado Empresarial Duradero</h1>
+            <p>Institucionalice su negocio, estandarice sus procesos y asegure un crecimiento rentable y sostenible con DIC Consultores.</p>
+            <a href="#contacto" class="cta-button">Solicite su Diagnóstico Estratégico GRATUITO</a>
+        </div>
+    </section>
+
+    <section class="pain-points">
+        <div class="container">
+            <h2>¿Su Empresa Enfrenta Estos Desafíos?</h2>
+            <ul>
+                <li>
+                    <img src="icon-conflicto.png" alt="Roles Confusos" style="max-width: 50px;">
+                    <strong>Roles Confusos y Fricción</strong>
+                    <p>La falta de claridad en responsabilidades genera ineficiencia y conflictos internos.</p>
+                </li>
+                <li>
+                    <img src="icon-ineficiencia.png" alt="Procesos Desalineados" style="max-width: 50px;">
+                    <strong>Procesos Desalineados</strong>
+                    <p>Operaciones que no responden a la estrategia, causando retrasos y costos elevados.</p>
+                </li>
+                 <li>
+                    <img src="icon-riesgo.png" alt="Falta de Control" style="max-width: 50px;">
+                    <strong>Falta de Control y Calidad</strong>
+                    <p>Incertidumbre en los resultados y dificultad para cumplir normativas y expectativas.</p>
+                </li>
+                 <li>
+                    <img src="icon-crecimiento.png" alt="Crecimiento Frenado" style="max-width: 50px;">
+                    <strong>Crecimiento Frenado</strong>
+                    <p>La operación diaria consume todo y no hay capacidad para expandirse o innovar.</p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="solutions">
+        <div class="container">
+            <h2>Nuestra Consultoría: El Puente Hacia la Estabilidad y la Eficiencia</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">En DIC Consultores, convertimos estos desafíos en oportunidades. Con más de 20 años de experiencia, construimos estructuras sólidas y procesos eficientes que impulsan su negocio.</p>
+            <div class="services">
+                <div class="service-card">
+                    <img src="icon-institucionalizacion.png" alt="Institucionalización">
+                    <h3>Institucionalización y Planeación Estratégica</h3>
+                    <p>Definimos el rumbo, creamos manuales de organización claros, definimos roles y alineamos a su equipo para lograr objetivos medibles y maximizar la productividad.</p>
+                </div>
+                <div class="service-card">
+                    <img src="icon-estandarizacion.png" alt="Estandarización">
+                    <h3>Estandarización de Procesos y Certificaciones ISO</h3>
+                    <p>Diseñamos flujos de trabajo eficientes, documentamos políticas y procedimientos y lo guiamos para obtener certificaciones clave (ISO 9001, 17025, etc.) que garantizan calidad y competitividad.</p>
+                </div>
+                <div class="service-card">
+                    <img src="icon-proveedores.png" alt="Proveedores">
+                    <h3>Desarrollo de Proveedores</h3>
+                    <p>Fortalecemos su cadena de valor a través de programas que aseguran la calidad, eficiencia y alineación de sus socios estratégicos con sus objetivos de negocio.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="storytelling">
+        <div class="container">
+            <img src="el-artesano-logo.png" alt="Caso de Éxito El Artesano" style="max-width: 150px; margin-bottom: 20px;">
+            <h3>La Transformación: Del Caos Artesanal a la Eficiencia Sostenible</h3>
+            <p>"Una reconocida empresa artesanal enfrentaba grandes retos: ventas manuales lentas, inventario sin control y falta de procesos. Con nuestra intervención, implementamos Odoo, rediseñamos su punto de venta y creamos manuales claros. <strong>¿El resultado? Redujimos el tiempo de compra en un 80%, lanzamos un e-commerce que genera el 10% de las ventas, minimizamos pérdidas de inventario en un 50% y redujimos errores en un 75%.</strong>" </p>
+            <p><strong>Esta es la clase de transformación que podemos lograr juntos.</strong></p>
+        </div>
+    </section>
+    
+    <section class="benefits">
+        <div class="container">
+            <h2>Los Resultados Hablan por Sí Mismos</h2>
+            <div style="display: flex; align-items: center; gap: 30px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <ul>
+                        <li><strong>Mayor Productividad:</strong> Equipos enfocados y eficientes.</li>
+                        <li><strong>Reducción de Costos y Gastos:</strong> Eliminación de ineficiencias y desperdicios.</li>
+                        <li><strong>Calidad Garantizada:</strong> Procesos estandarizados y cumplimiento de normativas ISO.</li>
+                        <li><strong>Crecimiento Sostenible:</strong> Bases sólidas para expandir su negocio.</li>
+                        <li><strong>Mejora en la Toma de Decisiones:</strong> Claridad organizacional y métricas definidas.</li>
+                        <li><strong>Transparencia y Confianza:</strong> Fortalecimiento de la estructura interna y externa.</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 300px; text-align: center;">
+                     <img src="grafica-beneficios.png" alt="Beneficios DIC Consultores" style="max-width: 100%; border-radius: 8px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="methodology">
+        <div class="container">
+            <h2>Nuestro Camino Hacia su Éxito en 4 Etapas</h2>
+             <div class="steps">
+                 <div class="step"><span>1</span>Diagnóstico</div>
+                 <div class="step"><span>2</span>Desarrollo</div>
+                 <div class="step"><span>3</span>Implementación</div>
+                 <div class="step"><span>4</span>Mejora</div>
+             </div>
+        </div>
+    </section>
+
+    <section class="trust">
+        <div class="container">
+            <h2>Más de 20 Años y 200 Organizaciones Confían en Nosotros</h2>
+            <div class="logos">
+                <img src="logo-infonavit.png" alt="INFONAVIT">
+                <img src="logo-artesano.png" alt="El Artesano">
+                 <img src="logo-pcnow.png" alt="PC NOW">
+                 <img src="logo-casgo.png" alt="Grupo CASGO">
+                 <img src="logo-oaxaca.png" alt="Gobierno Oaxaca">
+                 <img src="logo-cfe.png" alt="CFE">
+            </div>
+            <div class="testimonial">
+                <p>"La implementación del ERP Odoo con DIC Consultores integró nuestras ventas, fabricación e inventario, resultando en un incremento del 20% en eficiencia operativa y reducción de costos."</p>
+                <p><strong>- Cliente Satisfecho (Sector Manufactura/Retail)</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta" id="contacto">
+        <div class="container">
+            <h2>¿Listo para Construir una Empresa Más Fuerte y Rentable?</h2>
+            <p>Deje que nuestros expertos evalúen su situación actual y le muestren el camino. Complete el formulario y reciba un diagnóstico estratégico sin costo.</p>
+            <div class="contact-form">
+                <form action="#" method="post"> <label for="name">Nombre Completo:</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label for="phone">Teléfono:</label>
+                    <input type="tel" id="phone" name="phone" required>
+
+                    <label for="company">Nombre de la Empresa:</label>
+                    <input type="text" id="company" name="company">
+
+                    <label for="message">¿Cuál es su principal desafío actual?</label>
+                    <textarea id="message" name="message" rows="4"></textarea>
+
+                    <button type="submit">¡Sí, Quiero Mi Diagnóstico Gratuito!</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Desarrollo Industrial Consultoría y Capacitación SC (DIC Consultores). Todos los derechos reservados.</p>
+            <p>
+                <a href="https://dicc.com.mx" target="_blank">Web</a> | 
+                <a href="mailto:clientes@dicc.com.mx">clientes@dicc.com.mx</a> | 
+                Tel: 241 41 7 27 46 | 
+                <a href="https://www.facebook.com/dicconsultores" target="_blank">Facebook</a>
+            </p>
+             <p>Av. 5 de mayo No. 55, Colonia San José Tetel, C.P. 90450, Yauhquemehcan, Tlaxcala.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

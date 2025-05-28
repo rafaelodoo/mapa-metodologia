@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodología Odoo Interactiva - DIC Consultores</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #0A0E1A;
+            --header-bg: #0F172A; 
+            --card-bg: #1E293B; 
+            --text-light: #E2E8F0; 
+            --text-dim: #94A3B8; 
+            --accent-blue: #3B82F6;
+            --accent-sky: #0EA5E9;
+            --accent-purple: #8B5CF6;
+            --accent-pink: #EC4899;
+            --accent-orange: #F97316;
+            --gold-milestone: #FFD700;
+
+            /* Definición del degradado para la Fase 1, ahora para el contenido */
+            --phase-1-color: #8BC34A; /* Color base para la Fase 1 */
+            --phase-1-content-gradient: linear-gradient(
+                to right,
+                #8fff44 0%,       /* Verde claro brillante */
+                #72cc36 25%,      /* Verde más oscuro */
+                #8fff44 50%,      /* Verde claro brillante de nuevo */
+                #72cc36 75%,      /* Verde más oscuro de nuevo */
+                #8fff44 100%      /* Verde claro brillante al final */
+            );
+            --phase-1-text-color: #1A202C; 
+            
+            --phase-2-color: #26A69A; 
+            /* Definición del degradado para la Fase 2, ahora para el contenido */
+            --phase-2-content-gradient: linear-gradient(
+                to right,
+                #00ffb1 0%,       /* Verde/Cian brillante */
+                #14bdac 25%,      /* Teal más oscuro */
+                #00ffb1 50%,      /* Verde/Cian brillante de nuevo */
+                #14bdac 75%,      /* Teal más oscuro de nuevo */
+                #00ffb1 100%      /* Verde/Cian brillante al final */
+            );
+            --phase-2-text-color: #1A202C;
+
+            --phase-3-8-color: #6B46C1; 
+            /* Definición del degradado para las Fases 3-8, ahora para el contenido */
+            --phase-3-8-content-gradient: linear-gradient(
+                to right,
+                #7b49eb 0%,       /* Púrpura */
+                #6039b7 25%,      /* Púrpura más oscuro */
+                #7b49eb 50%,      /* Púrpura de nuevo */
+                #6039b7 75%,
+                #7b49eb 100%
+            );
+            --phase-3-8-text-color: #F7FAFC; 
+
+            --phase-9-color: #D53F8C; 
+            /* Definición del degradado para la Fase 9, ahora para el contenido */
+            --phase-9-content-gradient: linear-gradient(
+                to right,
+                #d53f8c 0%,       /* Rosa/Magenta */
+                #a22f6a 25%,      /* Rosa/Magenta más oscuro */
+                #d53f8c 50%,      /* Rosa/Magenta de nuevo */
+                #a22f6a 75%,
+                #d53f8c 100%
+            );
+            --phase-9-text-color: #F7FAFC;
+
+            --arrow-size: 18px;
+
+            /* Nuevas variables para el borde animado del recuadro de detalles */
+            --detailed-info-border-thickness: 3px;
+            --detailed-info-color-blue-bright: #00c6ff;
+            --detailed-info-color-green-bright: #00ff95;
+            --detailed-info-color-border-dim: #2a3b34;
+            --detailed-info-shine-length: 60deg;
+            --detailed-info-border-radius: 0.75rem;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .presentation-header-interactive {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1800px; 
+            padding: 12px 30px; 
+            background-color: var(--header-bg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5); 
+            border-bottom: 1px solid rgba(71, 85, 105, 0.5); 
+        }
+
+        .logo-dic-interactive img { height: 50px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));}
+        .presentation-title-interactive {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(2rem, 4vw, 3rem); 
+            color: var(--accent-purple);
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3);
+            text-align: center;
+            flex-grow: 1; margin: 0 25px;
+        }
+        .logo-odoo-interactive img { height: 40px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));}
+        .logo-odoo-interactive .ready-partner-interactive {
+            font-size: 0.65rem; color: var(--text-dim); text-align: center; margin-top: 2px;
+        }
+
+        .main-content-area {
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px; 
+            padding: 30px; 
+            box-sizing: border-box;
+        }
+
+        .timeline-viewport {
+            width: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            margin-bottom: 15px; 
+        }
+
+        .horizontal-timeline-interactive {
+            display: flex;
+            width: 100%;
+            position: relative;
+            padding-top: 25px; 
+            padding-bottom: 10px; 
+        }
+
+        .timeline-phase-interactive {
+            flex: 1;
+            min-width: 120px; 
+            position: relative;
+            cursor: pointer;
+            /* Default for desktop: overlapping arrows */
+            margin-left: calc(var(--arrow-size) * -1 + 2px); 
+            clip-path: polygon(0% 0%, calc(100% - var(--arrow-size) - 2px) 0%, calc(100% - 2px) 50%, calc(100% - var(--arrow-size) - 2px) 100%, 0% 100%, var(--arrow-size) 50%);
+            transition: transform 0.25s ease-out, z-index 0s 0.25s, filter 0.25s ease-out;
+            padding: 2px; 
+        }
+        .timeline-phase-interactive:first-child { 
+            margin-left: 0; 
+            clip-path: polygon(0% 0%, calc(100% - var(--arrow-size) - 2px) 0%, calc(100% - 2px) 50%, calc(100% - var(--arrow-size) - 2px) 100%, 0% 100%);
+        }
+        /* Modificación para que la última figura termine en punta */
+        .timeline-phase-interactive:last-child { 
+            clip-path: polygon(0% 0%, calc(100% - var(--arrow-size)) 0%, 100% 50%, calc(100% - var(--arrow-size)) 100%, 0% 100%, var(--arrow-size) 50%);
+        }
+
+        .timeline-phase-interactive::before { 
+            content: "";
+            position: absolute;
+            inset: 0; 
+            z-index: 0; 
+            /* El background se define por las clases phase-bg-X. Para las fases con brillo en el contenido, este pseudo-elemento ya no lleva el brillo. */
+            background: var(--phase-1-border-gradient); /* Se sobrescribe por las clases phase-bg-X */
+            animation: spin 3s linear infinite paused; 
+            opacity: 0; 
+            transition: opacity 0.3s ease-in-out;
+            clip-path: inherit; 
+        }
+
+        .timeline-phase-interactive .phase-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 90px;
+            padding: 12px 8px;
+            position: relative; 
+            z-index: 1; 
+            background-color: var(--phase-1-color); /* Color base, se sobrescribe por el degradado animado */
+            transition: filter 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.1);
+            overflow: hidden; /* Importante para que el brillo no se desborde */
+        }
+        
+        /* Estilos específicos para la Fase 1 con la nueva animación de brillo en el contenido */
+        .phase-bg-1 .phase-content-wrapper { 
+            background-color: var(--phase-1-color); /* Fallback color */
+            color: var(--phase-1-text-color); 
+            background: var(--phase-1-content-gradient); /* Usa el nuevo linear-gradient para el contenido */
+            background-size: 300% auto; /* Tamaño del fondo para el efecto de brillo */
+            background-position: 0% 0%; /* Posición inicial del fondo */
+            animation: chevronShine 4s linear infinite paused; /* Nueva animación para el contenido de la Fase 1 */
+        }
+        /* Aseguramos que el ::before de la Fase 1 no tenga un background visible */
+        .phase-bg-1::before { 
+            background: transparent; 
+            animation: none; /* Desactivar la animación de giro para el ::before de la Fase 1 */
+        }
+
+        /* Estilos específicos para la Fase 2 con la nueva animación de brillo en el contenido */
+        .phase-bg-2 .phase-content-wrapper { 
+            background-color: var(--phase-2-color); /* Fallback color */
+            color: var(--phase-2-text-color); 
+            background: var(--phase-2-content-gradient); /* Usa el nuevo linear-gradient para el contenido */
+            background-size: 300% auto; /* Tamaño del fondo para el efecto de brillo */
+            background-position: 0% 0%; /* Posición inicial del fondo */
+            animation: chevronShine 4s linear infinite paused; /* Nueva animación para el contenido de la Fase 2 */
+        }
+        /* Aseguramos que el ::before de la Fase 2 no tenga un background visible */
+        .phase-bg-2::before { 
+            background: transparent; 
+            animation: none; /* Desactivar la animación de giro para el ::before de la Fase 2 */
+        }
+
+        /* Estilos específicos para las Fases 3-8 con la nueva animación de brillo en el contenido */
+        .phase-bg-3 .phase-content-wrapper, .phase-bg-4 .phase-content-wrapper, 
+        .phase-bg-5 .phase-content-wrapper, .phase-bg-6 .phase-content-wrapper, 
+        .phase-bg-7 .phase-content-wrapper, .phase-bg-8 .phase-content-wrapper { 
+            background-color: var(--phase-3-8-color); /* Fallback color */
+            color: var(--phase-3-8-text-color);
+            background: var(--phase-3-8-content-gradient); /* Usa el nuevo linear-gradient para el contenido */
+            background-size: 300% auto; /* Tamaño del fondo para el efecto de brillo */
+            background-position: 0% 0%; /* Posición inicial del fondo */
+            animation: chevronShine 4s linear infinite paused; /* Nueva animación para el contenido de estas fases */
+        }
+        /* Aseguramos que el ::before de las Fases 3-8 no tenga un background visible */
+        .phase-bg-3::before, .phase-bg-4::before, .phase-bg-5::before, 
+        .phase-bg-6::before, .phase-bg-7::before, .phase-bg-8::before {
+            background: transparent;
+            animation: none; /* Desactivar la animación de giro para el ::before de estas fases */
+        }
+
+        /* Estilos específicos para la Fase 9 con la nueva animación de brillo en el contenido */
+        .phase-bg-9 .phase-content-wrapper { 
+            background-color: var(--phase-9-color); /* Fallback color */
+            color: var(--phase-9-text-color); 
+            background: var(--phase-9-content-gradient); /* Usa el nuevo linear-gradient para el contenido */
+            background-size: 300% auto; /* Tamaño del fondo para el efecto de brillo */
+            background-position: 0% 0%; /* Posición inicial del fondo */
+            animation: chevronShine 4s linear infinite paused; /* Nueva animación para el contenido de la Fase 9 */
+        }
+        /* Aseguramos que el ::before de la Fase 9 no tenga un background visible */
+        .phase-bg-9::before { 
+            background: transparent; 
+            animation: none; /* Desactivar la animación de giro para el ::before de la Fase 9 */
+        }
+
+        .timeline-phase-interactive:hover,
+        .timeline-phase-interactive.active {
+            transform: translateY(-6px) scale(1.02); 
+            z-index: 10;
+            transition-delay: 0s;
+            filter: saturate(1.2);
+        }
+        .timeline-phase-interactive:hover .phase-content-wrapper,
+        .timeline-phase-interactive.active .phase-content-wrapper {
+            filter: brightness(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15);
+            animation-play-state: running; /* Esto activará la animación chevronShine en el contenido */
+        }
+        /* Sobrescribir específicamente para todas las fases con brillo en el contenido para que su ::before no se anime */
+        .timeline-phase-interactive.phase-bg-1:hover::before,
+        .timeline-phase-interactive.phase-bg-1.active::before,
+        .timeline-phase-interactive.phase-bg-2:hover::before,
+        .timeline-phase-interactive.phase-bg-2.active::before,
+        .timeline-phase-interactive.phase-bg-3:hover::before,
+        .timeline-phase-interactive.phase-bg-3.active::before,
+        .timeline-phase-interactive.phase-bg-4:hover::before,
+        .timeline-phase-interactive.phase-bg-4.active::before,
+        .timeline-phase-interactive.phase-bg-5:hover::before,
+        .timeline-phase-interactive.phase-bg-5.active::before,
+        .timeline-phase-interactive.phase-bg-6:hover::before,
+        .timeline-phase-interactive.phase-bg-6.active::before,
+        .timeline-phase-interactive.phase-bg-7:hover::before,
+        .timeline-phase-interactive.phase-bg-7.active::before,
+        .timeline-phase-interactive.phase-bg-8:hover::before,
+        .timeline-phase-interactive.phase-bg-8.active::before,
+        .timeline-phase-interactive.phase-bg-9:hover::before,
+        .timeline-phase-interactive.phase-bg-9.active::before {
+            animation-play-state: paused; /* Asegura que el ::before de estas fases no se anime */
+            opacity: 0; /* Asegura que el ::before de estas fases sea invisible */
+        }
+
+
+        .timeline-phase-interactive h3 {
+            font-size: clamp(0.75rem, 1.1vw, 0.9rem); font-weight: 700; margin-bottom: 4px;
+        }
+        .timeline-phase-interactive .phase-short-desc {
+            font-size: clamp(0.65rem, 0.9vw, 0.75rem); line-height: 1.3;
+            max-width: 95%; margin: 0 auto;
+        }
+
+        .detailed-info-display {
+            width: 100%; max-width: 900px; margin: 0 auto; margin-top: 20px; 
+            opacity: 0; transform: translateY(20px) scale(0.98);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0s 0.4s;
+            visibility: hidden; 
+            
+            /* Nuevos estilos para el borde animado */
+            padding: var(--detailed-info-border-thickness); /* Espacio para el borde */
+            background: transparent; /* El contenedor no tiene fondo propio */
+            border-radius: var(--detailed-info-border-radius); /* Redondeo del contenedor */
+            position: relative; 
+            z-index: 1; /* Asegura que esté por encima de otros elementos si es necesario */
+            overflow: hidden; /* Recorta el contenido si se desborda */
+        }
+        .detailed-info-display.visible {
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+            visibility: visible;
+            transition-delay: 0s;
+        }
+        .detailed-info-display::before {
+            content: ""; 
+            position: absolute; 
+            inset: 0; 
+            z-index: 0; /* Detrás del contenido, pero visible como borde */
+            border-radius: inherit; /* Hereda el redondeo del padre */
+            
+            /* Propiedades del gradiente cónico para el brillo */
+            background: conic-gradient(
+                from var(--r, 0deg) at 50% 50%, /* --r es el ángulo de rotación, default 0deg */
+                var(--detailed-info-color-border-dim) 0deg,
+                var(--detailed-info-color-blue-bright) var(--shine-start, 0deg), /* Inicio del brillo */
+                var(--detailed-info-color-green-bright) var(--shine-mid, 15deg),  /* Mitad del brillo */
+                var(--detailed-info-color-blue-bright) var(--shine-end, 30deg),   /* Fin del brillo */
+                var(--detailed-info-color-border-dim) var(--shine-end-dim, 30.1deg) /* Vuelta al color tenue */
+            );
+            /* La animación se controlará por JavaScript */
+            opacity: 0; /* Inicialmente oculto */
+            transition: opacity 0.4s ease-out; /* Transición para la aparición/desaparición */
+        }
+        .detailed-info-display.visible::before {
+            opacity: 1; /* Muestra el borde cuando es visible */
+        }
+
+        .detailed-info-content-wrapper {
+            background-color: var(--card-bg); /* Fondo del contenido interno */
+            padding: 25px 30px; 
+            /* Ajusta el border-radius para que haya un espacio visible para el borde animado */
+            border-radius: calc(var(--detailed-info-border-radius) - var(--detailed-info-border-thickness)); 
+            position: relative; 
+            z-index: 1; /* Asegura que el contenido esté por encima del pseudo-elemento ::before */
+        }
+        .detailed-info-content-wrapper h4 {font-size: clamp(1.4rem, 2.5vw, 1.7rem);font-weight: 700;margin-bottom: 1rem;display: flex;align-items: center; color: var(--text-light);}
+        .detailed-info-content-wrapper h4 .icon-wrapper {margin-right: 0.75rem;padding: 0.5rem;background-color: rgba(14, 165, 233, 0.15);border-radius: 9999px;display: inline-flex; border: 1px solid rgba(14, 165, 233, 0.3);}
+        .detailed-info-content-wrapper h4 .icon-wrapper svg {width: 1.5rem; height: 1.5rem; color: var(--accent-sky);}
+        .detailed-info-content-wrapper .description {color: var(--text-dim); margin-bottom: 1.25rem; font-size: 0.9rem; line-height: 1.6;}
+        .detailed-info-content-wrapper ul {list-style: none; padding-left: 0; margin-bottom: 1.25rem; space-y: 0.6rem; font-size: 0.9rem;}
+        .detailed-info-content-wrapper ul li {display: flex; align-items: flex-start; color: var(--text-light);}
+        .detailed-info-content-wrapper ul li svg {height: 1.2rem; width: 1.2rem; color: #4ADE80; margin-right: 0.6rem; flex-shrink: 0; margin-top: 0.15rem;}
+        .detailed-info-content-wrapper .result-key {font-size: 0.9rem; font-weight: 600; color: var(--accent-sky);padding: 0.85rem 1rem; border-radius: 0.5rem;background-color: rgba(14, 165, 233, 0.1);border-left: 4px solid var(--accent-sky); box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+
+        /* Keyframes para la animación de giro (spin) - se mantiene para otros elementos */
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Keyframes para la animación de brillo deslizante del chevron */
+        @keyframes chevronShine {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: -200% 0%; /* Desplaza el fondo 2 veces su ancho para un efecto de brillo completo */
+            }
+        }
+
+        .milestone-interactive { 
+            position: absolute; top: 0px; font-size: 0.8rem; font-weight: 600;
+            padding: 3px 8px; border-radius: 4px; display: flex; align-items: center;
+            color: var(--gold-milestone); z-index: 20; 
+            text-shadow: 0 0 5px rgba(0,0,0,0.7);
+        }
+        .milestone-diamond-interactive {
+            width: 8px; height: 8px; background-color: var(--gold-milestone);
+            transform: rotate(45deg); margin-right: 6px; border: 1px solid rgba(0,0,0,0.5);
+            box-shadow: 0 0 5px var(--gold-milestone);
+        }
+        .milestone-line-interactive {
+            position: absolute; bottom: -12px; left: 3px; height: 12px; width: 1px;
+            border-left: 2px dotted var(--gold-milestone);
+        }
+        .kick-off-interactive { left: calc((100% / 9) * 1.5); transform: translateX(-50%); } 
+        .go-live-interactive { left: calc((100% / 9) * 7.5); transform: translateX(-50%);} 
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 1600px) {
+             :root { --arrow-size: 16px; }
+            .timeline-phase-interactive { min-width: 110px; }
+        }
+        @media (max-width: 1280px) { /* xl */
+            :root { --arrow-size: 14px; }
+            .timeline-phase-interactive { min-width: 100px; }
+            .timeline-phase-interactive h3 { font-size: clamp(0.7rem, 1vw, 0.8rem); }
+            .timeline-phase-interactive .phase-short-desc { font-size: clamp(0.6rem, 0.8vw, 0.7rem); }
+        }
+        @media (max-width: 1024px) { /* lg, Tablet - Phases wrap */
+            :root { --arrow-size: 12px; } /* Arrow size effectively becomes 0 for wrapped items */
+            .main-content-area { padding: 20px 15px; gap: 20px;}
+            .presentation-header-interactive { padding: 10px 20px; }
+            .horizontal-timeline-interactive { 
+                flex-wrap: wrap; 
+                gap: 10px; 
+                justify-content: center; 
+                padding-top: 20px;
+            }
+            .timeline-phase-interactive,
+            .timeline-phase-interactive:first-child,
+            .timeline-phase-interactive:last-child {
+                flex-grow: 0; 
+                flex-shrink: 0; 
+                flex-basis: calc(33.333% - 7px); /* 3 per row, (10px gap * 2) / 3 items = ~6.66px. Adjusted to 7px for safety. */
+                min-width: 130px; 
+                margin-left: 0; 
+                clip-path: none; /* Remove arrow shape */
+                border-radius: 0.375rem; /* rounded-md */
+            }
+             /* The ::before for border still needs clip-path:inherit, but parent now has none, so it will be rectangular */
+            .milestone-interactive { font-size: 0.7rem; top: -5px; }
+            .kick-off-interactive { left: calc(16.666% + 5px); transform: translateX(-50%); } 
+            .go-live-interactive { left: calc(16.666% + 5px); top: calc( (90px + 10px + 4px) * 2 + 20px - 5px); /* (phase height + gap + padding*2) */ transform: translateX(-50%);}
+        }
+        @media (max-width: 767px) { /* md, Móvil - Phases wrap */
+            .presentation-header-interactive { flex-direction: column; gap: 12px; text-align: center; padding: 12px 15px;}
+            .logo-dic-interactive img { height: 40px; }
+            .presentation-title-interactive { font-size: 1.6rem; margin: 5px 0; }
+            .logo-odoo-interactive img { height: 30px; }
+            .main-content-area { padding: 15px 10px; gap: 15px; }
+            .horizontal-timeline-interactive { padding-top: 15px; gap: 8px;}
+            .timeline-phase-interactive,
+            .timeline-phase-interactive:first-child,
+            .timeline-phase-interactive:last-child {
+                flex-basis: calc(50% - 4px); /* 2 per row */
+                min-width: 120px; 
+                min-height: 80px;
+                /* clip-path and margin-left already handled by 1024px breakpoint or overridden below for 480px */
+            }
+            .timeline-phase-interactive h3 { font-size: 0.7rem; }
+            .timeline-phase-interactive .phase-short-desc { font-size: 0.6rem; }
+            .detailed-info-content-wrapper h4 {font-size: 1.3rem;}
+            .detailed-info-content-wrapper .description,
+            .detailed-info-content-wrapper ul,
+            .detailed-info-content-wrapper .result-key {font-size: 0.8rem;}
+            .milestone-interactive { display: none; } 
+        }
+         @media (max-width: 480px) { /* Móvil más pequeño - Phases wrap */
+            .horizontal-timeline-interactive { gap: 8px; }
+            .timeline-phase-interactive,
+            .timeline-phase-interactive:first-child,
+            .timeline-phase-interactive:last-child {
+                flex-basis: 100%; /* 1 per row */
+                min-width: 100%;
+                margin-left: 0; 
+                clip-path: none; 
+                border-radius: 0.375rem; 
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header class="presentation-header-interactive">
+        <div class="logo-dic-interactive"> <img src="https://dicc.odoo.com/web/image/website/1/logo/DIC%20Consultores?unique=9fa4907" alt="DIC Consultores Logo"> </div>
+        <h1 class="presentation-title-interactive">Metodología de implementación de Odoo</h1>
+        <div class="logo-odoo-interactive"> 
+            <img src="https://odoocdn.com/openerp_website/static/src/img/assets/png/odoo_ready_partners_rgb.png" alt="Odoo Logo"> 
+            <div class="ready-partner-interactive">Ready Partner</div> 
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="timeline-viewport" id="timelineViewport">
+            <div class="horizontal-timeline-interactive" id="horizontalTimeline">
+                <div class="milestone-interactive kick-off-interactive">
+                    <div class="milestone-diamond-interactive"><div class="milestone-line-interactive"></div></div> Kick Off
+                </div>
+                <div class="milestone-interactive go-live-interactive">
+                    <div class="milestone-diamond-interactive"><div class="milestone-line-interactive"></div></div> Go Live
+                </div>
+
+                <div class="timeline-phase-interactive phase-bg-1" data-phase="1">
+                    <div class="phase-content-wrapper"><h3>Fase 1</h3><p class="phase-short-desc">Entendimiento Inicial</p></div>
+                </div>
+                <div class="timeline-phase-interactive phase-bg-2" data-phase="2">
+                    <div class="phase-content-wrapper"><h3>Fase 2</h3><p class="phase-short-desc">Diagnóstico</p></div>
+                </div>
+                <div class="timeline-phase-interactive phase-bg-3" data-phase="3">
+                    <div class="phase-content-wrapper"><h3>Fase 3</h3><p class="phase-short-desc">Diseño Solución</p></div>
+                </div>
+                <div class="timeline-phase-interactive phase-bg-4" data-phase="4">
+                    <div class="phase-content-wrapper"><h3>Fase 4</h3><p class="phase-short-desc">Creación y Config.</p></div>
+                </div>
+                <div class="timeline-phase-interactive phase-bg-5" data-phase="5">
+                    <div class="phase-content-wrapper"><h3>Fase 5</h3><p class="phase-short-desc">Config. Específica</p></div>
+                </div>
+                <div class="timeline-phase-interactive phase-bg-6" data-phase="6">
+                    <div class="phase-content-wrapper"><h3>Fase 6</h3><p class="phase-short-desc">Pruebas y Validación</p></div>
+                </div>
+                <div class="timeline-phase-interactive phase-bg-7" data-phase="7">
+                    <div class="phase-content-wrapper"><h3>Fase 7</h3><p class="phase-short-desc">Capacitación</p></div>
+                </div>
+                <div class="timeline-phase-interactive phase-bg-8" data-phase="8">
+                    <div class="phase-content-wrapper"><h3>Fase 8</h3><p class="phase-short-desc">Go-Live y Soporte</p></div>
+                </div>
+                <div class="timeline-phase-interactive phase-bg-9" data-phase="9">
+                    <div class="phase-content-wrapper"><h3>Fase 9</h3><p class="phase-short-desc">Soporte Continuo</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detailed-info-display" id="detailedInfoDisplay">
+            <div class="detailed-info-content-wrapper" id="detailedInfoContentWrapper">
+                </div>
+        </div>
+    </div>
+
+    <script>
+    // Variables para la animación del borde del recuadro de detalles
+    let detailedInfoRotationAngle = 0;
+    const detailedInfoRotationSpeed = 0.8; 
+    const detailedInfoShineLength = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--detailed-info-shine-length').trim() || '60');
+    let detailedInfoAnimationFrameId = null;
+
+    // Función para animar el borde del recuadro de detalles
+    function animateDetailedInfoBorder() {
+        detailedInfoRotationAngle = (detailedInfoRotationAngle + detailedInfoRotationSpeed) % 360;
+        
+        const shineStart = 0;
+        const shineMid = detailedInfoShineLength / 2;
+        const shineEnd = detailedInfoShineLength;
+        const shineEndDim = detailedInfoShineLength + 0.1 > 360 ? 360 : detailedInfoShineLength + 0.1;
+
+        const detailedInfoDisplay = document.getElementById('detailedInfoDisplay');
+        if (detailedInfoDisplay) {
+            detailedInfoDisplay.style.setProperty('--r', `${detailedInfoRotationAngle}deg`);
+            detailedInfoDisplay.style.setProperty('--shine-start', `${shineStart}deg`);
+            detailedInfoDisplay.style.setProperty('--shine-mid', `${shineMid}deg`);
+            detailedInfoDisplay.style.setProperty('--shine-end', `${shineEnd}deg`);
+            detailedInfoDisplay.style.setProperty('--shine-end-dim', `${shineEndDim}deg`);
+        }
+
+        detailedInfoAnimationFrameId = requestAnimationFrame(animateDetailedInfoBorder);
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const timelineViewport = document.getElementById('timelineViewport');
+        const phases = document.querySelectorAll('.timeline-phase-interactive');
+        const detailedInfoDisplay = document.getElementById('detailedInfoDisplay');
+        const detailedInfoContentWrapper = document.getElementById('detailedInfoContentWrapper');
+        let activePhaseElement = null;
+
+        const phaseDetailsMap = {
+            "1": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" /></svg></span>Fase 1: Entendimiento Inicial</h4><p class="description">Antes de iniciar formalmente cualquier proyecto, dedicamos tiempo a conocerte y a entender tus necesidades generales. Esta etapa es fundamental para sentar las bases de una colaboración exitosa y asegurar que Odoo es la herramienta adecuada para ti.</p><ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>Reuniones de acercamiento para conocer tu empresa y desafíos.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>Presentación de Odoo y diálogo sobre tus necesidades específicas.</li></ul><p class="result-key">Resultado Clave: Propuesta estimada inicial transparente (costos de licencias, servicios, módulos preliminares y tiempo estimado).</p>`,
+            "2": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg></span>Fase 2: Diagnóstico Profundo</h4><p class="description">Nos sumergimos en tu operación para definir cómo Odoo se convertirá en el motor de tu empresa y los beneficios que obtendrás, recopilando y analizando toda la información necesaria.</p><ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Kick-Off del proyecto y entendimiento detallado de tus procesos.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Entrevistas con personal clave y evaluación funcional Odoo vs. necesidades.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Análisis de formatos, reportes e infraestructura tecnológica.</li></ul><p class="result-key">Resultado Clave: Informe de Diagnóstico (solución propuesta, beneficios, módulos finales, plan de trabajo, usuarios, roles y costos finales).</p>`,
+            "3": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></span>Fase 3: Diseño de la Solución y Flujos de Trabajo</h4> <p class="description">Traducimos el diagnóstico en un diseño claro de cómo tus procesos se ejecutarán en Odoo, creando los nuevos flujos de trabajo que guiarán la configuración.</p> <ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Mapeo de procesos clave a Odoo y optimización de flujos.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Elaboración de reglas de negocio o historias de usuario para desarrollos (si aplica).</li></ul> <p class="result-key">Resultado Clave: Documentación de nuevos flujos de trabajo en Odoo y reglas de negocio/historias de usuario (si aplica).</p>`,
+            "4": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4M4 7v4c0 2.21 3.582 4 8 4s8-1.79 8-4V7" /></svg></span>Fase 4: Creación de BD, Configuración Inicial e Importación</h4> <p class="description">Establecemos el entorno de Odoo, realizamos una configuración general e importamos tus datos maestros.</p> <ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Creación y configuración inicial de la base de datos Odoo.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Revisión e importación de datos maestros (clientes, productos, proveedores, etc.).</li></ul> <p class="result-key">Resultado Clave: Base de datos Odoo creada, configurada e con datos maestros importados y validados.</p>`,
+            "5": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></span>Fase 5: Configuración Específica, Personalización y/o Desarrollo</h4> <p class="description">Realizamos la configuración detallada de cada módulo según los flujos de trabajo diseñados e implementamos los ajustes a medida o desarrollos nuevos definidos.</p> <ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Parametrización de cada módulo ajustada a flujos y reglas de negocio.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Implementación de personalizaciones o desarrollos a medida.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Pruebas internas de todo lo configurado y desarrollado.</li></ul> <p class="result-key">Resultado Clave: Módulos Odoo con configuración específica, personalizaciones/desarrollos integrados y documentación técnica (si aplica).</p>`,
+            "6": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>Fase 6: Pruebas y Validación del Cliente</h4> <p class="description">Tú y tu equipo prueban la solución completa en Odoo para asegurar que todo funciona como se espera y cubre sus necesidades antes del arranque.</p> <ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Preparación de entorno de pruebas y guía en ejecución de escenarios.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Validación de funcionalidad, usabilidad y correcta operación de procesos.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Realización de ajustes dentro del alcance acordado.</li></ul> <p class="result-key">Resultado Clave: Registro de pruebas, ajustes realizados y sistema Odoo probado con visto bueno del SPoC.</p>`,
+            "7": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg></span>Fase 7: Capacitación del Equipo</h4> <p class="description">Aseguramos que tu equipo no solo comprenda el sistema y domine sus funcionalidades, sino que también se sienta empoderado para utilizar Odoo con confianza.</p> <ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Sesiones de capacitación adaptadas a roles y responsabilidades.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Capacitación en uso de documentación oficial y recursos de aprendizaje.</li></ul> <p class="result-key">Resultado Clave: Usuarios clave y finales capacitados, videos de las sesiones para consulta posterior.</p>`,
+            "8": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>Fase 8: Puesta en Producción (Go-Live) y Soporte Inicial</h4> <p class="description">¡Llegó el día del arranque! Odoo comienza a operar en su entorno productivo. Brindamos un acompañamiento cercano para asegurar una transición exitosa y tranquila.</p> <ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Presencia el día del arranque para resolver dudas o problemas de inmediato.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>10 horas de soporte de estabilización incluidas durante el primer mes.</li></ul> <p class="result-key">Resultado Clave: Sistema Odoo funcionando en producción, registro de consultas/incidentes y Acta de Entrega-Recepción.</p>`,
+            "9": `<h4><span class="icon-wrapper"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg></span>Fase 9: Soporte y Evolución Continua (Opcional)</h4> <p class="description">Ofrecemos la opción de una Póliza de Soporte y Mantenimiento (Anual) para asegurar que Odoo siga funcionando óptimamente y evolucione con tu negocio.</p> <ul><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Acceso continuo a nuestro equipo de soporte experto.</li><li><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>Servicios cubiertos: mantenimiento, soporte técnico, nuevos módulos, ajustes, desarrollos, capacitación, etc.</li></ul> <p class="result-key">Resultado Clave (bajo Póliza): Registro detallado de horas y actividades, Odoo siempre al día.</p>`,
+        };
+
+        phases.forEach(phase => {
+            phase.addEventListener('click', () => {
+                const currentPhaseNum = phase.dataset.phase;
+                const detailedContentHTML = phaseDetailsMap[currentPhaseNum] || "<p>Detalles no disponibles.</p>";
+
+                if (activePhaseElement === phase) {
+                    detailedInfoDisplay.classList.remove('visible');
+                    timelineViewport.style.transform = 'translateY(0px)';
+                    activePhaseElement.classList.remove('active');
+                    activePhaseElement = null;
+                    // Detener la animación cuando el recuadro de detalles se oculta
+                    if (detailedInfoAnimationFrameId) {
+                        cancelAnimationFrame(detailedInfoAnimationFrameId);
+                        detailedInfoAnimationFrameId = null;
+                    }
+                } else {
+                    if (activePhaseElement) {
+                        activePhaseElement.classList.remove('active');
+                    }
+                    detailedInfoContentWrapper.innerHTML = detailedContentHTML;
+                    detailedInfoDisplay.classList.add('visible');
+                    phase.classList.add('active');
+                    activePhaseElement = phase;
+                    
+                    // Iniciar la animación cuando el recuadro de detalles se hace visible
+                    if (!detailedInfoAnimationFrameId) {
+                        animateDetailedInfoBorder();
+                    }
+                    
+                    requestAnimationFrame(() => {
+                        const headerHeight = document.querySelector('.presentation-header-interactive').offsetHeight;
+                        const timelineViewportTop = timelineViewport.getBoundingClientRect().top;
+                        
+                        let moveDistance = timelineViewportTop - headerHeight - 10; 
+                        
+                        timelineViewport.style.transform = `translateY(-${moveDistance}px)`;
+                    });
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>
